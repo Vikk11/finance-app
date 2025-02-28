@@ -1,0 +1,44 @@
+name: Docker CI
+
+on: [push, pull_request]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Create Docker Secrets Files
+        run: |
+          mkdir -p secrets
+          echo "${{ secrets.DATABASE_USER }}" > secrets/database_user
+          echo "${{ secrets.POSTGRES_PASSWORD }}" > secrets/postgres_password
+
+      - name: Start Services with Docker Compose
+        run: |
+          docker-compose -f infra/docker-compose.yml up -d
+
+      - name: Run Tests for User Service
+        run: |
+          docker-compose -f infra/docker-compose.yml exec -T user-service ./gradlew test
+
+      - name: Run Tests for Transaction Service
+        run: |
+          docker-compose -f infra/docker-compose.yml exec -T transaction-service ./gradlew test
+
+      - name: Run Tests for Budgeting Service
+        run: |
+          docker-compose -f infra/docker-compose.yml exec -T budgeting-service ./gradlew test
+
+      - name: Shut Down Services
+        run: docker-compose -f infra/docker-compose.yml down
