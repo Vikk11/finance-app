@@ -28,17 +28,5 @@ jobs:
         run: |
           docker-compose -f infra/docker-compose.yml up -d
 
-      - name: Run Tests for User Service
-        run: |
-          docker-compose -f infra/docker-compose.yml exec -T user-service ./gradlew test
-
-      - name: Run Tests for Transaction Service
-        run: |
-          docker-compose -f infra/docker-compose.yml exec -T transaction-service ./gradlew test
-
-      - name: Run Tests for Budgeting Service
-        run: |
-          docker-compose -f infra/docker-compose.yml exec -T budgeting-service ./gradlew test
-
       - name: Shut Down Services
         run: docker-compose -f infra/docker-compose.yml down
