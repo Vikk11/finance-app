@@ -76,8 +76,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-user:5432/user-service
       SPRING_DATASOURCE_USERNAME: /run/secrets/database_user
       SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/postgres_password
-      DATABASE_USER: "$(cat /run/secrets/database_user)"
-      POSTGRES_PASSWORD: "$(cat /run/secrets/postgres_password)"
+      DATABASE_USER_FILE: /run/secrets/database_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
     
   transaction-service:
     build:
@@ -103,8 +103,8 @@ services:
       SHARED_DATASOURCE_USERNAME: /run/secrets/database_user
 
       SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/postgres_password
-      DATABASE_USER: "$(cat /run/secrets/database_user)"
-      POSTGRES_PASSWORD: "$(cat /run/secrets/postgres_password)"
+      DATABASE_USER_FILE: /run/secrets/database_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
     
   budgeting-service:
     build:
@@ -123,8 +123,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-budgeting:5432/budgeting-service
       SPRING_DATASOURCE_USERNAME: /run/secrets/database_user
       SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/postgres_password
-      DATABASE_USER: "$(cat /run/secrets/database_user)"
-      POSTGRES_PASSWORD: "$(cat /run/secrets/postgres_password)"
+      DATABASE_USER_FILE: /run/secrets/database_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
 
   api-gateway:
     build: ../savvy-app-gateway
