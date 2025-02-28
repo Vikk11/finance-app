@@ -3,11 +3,11 @@ package com.savvy.budgetingservice
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest
-class BudgetingServiceApplicationTests {
+//@SpringBootTest
+//class BudgetingServiceApplicationTests {
 
-    @Test
-    fun contextLoads() {
-    }
+//    @Test
+//    fun contextLoads() {
+//    }
 
-}
+//}

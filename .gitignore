@@ -1,0 +1,5 @@
+#Ignore Docker secrets
+secrets/
+
+#Ignore local environment files
+*.env
