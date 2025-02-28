@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import styles from './styles';
 import AppIcon from '../../../../assets/icons/app-logo.svg'
+import {AuthScreenProps} from "../../../utils/types";
 
-const LoginScreen = () => {
+const LoginScreen: React.FC<AuthScreenProps<"Login">> = ( {navigation}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -11,7 +12,9 @@ const LoginScreen = () => {
         <View style={styles.container}>
             <AppIcon width={80} height={80} style={styles.icon} />
             <Text style={styles.title}>Login</Text>
-            <Text style={styles.text}>Sign in to continue.{"\n"}Don't have an account? <Text style={styles.signupLink}>Sign Up</Text></Text>
+            <Text style={styles.text}>Sign in to continue.{"\n"}Don't have an account?
+                <Text style={styles.signupLink} onPress={() => navigation.navigate("Signup")}> Sign Up</Text>
+            </Text>
 
             <Text style={styles.inputText}>USERNAME</Text>
             <TextInput

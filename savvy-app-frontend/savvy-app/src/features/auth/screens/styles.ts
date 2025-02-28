@@ -9,6 +9,22 @@ const styles = StyleSheet.create({
         backgroundColor: colors.background,
         paddingHorizontal: 20,
     },
+    signupBackground: {
+        backgroundColor: colors.secondary,
+        paddingLeft: 15,
+        paddingTop: 20,
+    },
+    signupContainer: {
+        alignItems: 'center',
+        backgroundColor: colors.background,
+        borderRadius: 40,
+        paddingLeft: 20,
+        paddingRight: 40,
+        paddingVertical: 20,
+        marginRight: -30,
+        marginLeft: -15,
+        height: '100%',
+    },
     icon: {
         width: 80,
         height: 80,
@@ -19,6 +35,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: colors.secondary,
         marginBottom: 5,
+    },
+    signupTitle: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: colors.secondary,
+        marginBottom: 20,
+        marginHorizontal: 60,
+        textAlign: 'center',
     },
     text: {
         fontSize: 14,
@@ -51,13 +75,13 @@ const styles = StyleSheet.create({
         color: colors.secondary,
         alignSelf: 'flex-start',
         marginLeft: 50,
-        marginBottom: 15,
     },
     button: {
         width: '80%',
         backgroundColor: colors.primary,
         padding: 15,
         borderRadius: 10,
+        marginTop: 15,
         alignItems: 'center',
     },
     buttonText: {
