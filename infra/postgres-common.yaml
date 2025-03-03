@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-common
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-common
+  template:
+    metadata:
+      labels:
+        app: postgres-common
+    spec:
+      containers:
+        - name: postgres-common
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: database_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: postgres_password
+            - name: POSTGRES_DB
+              value: common_service
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-common-data
+      volumes:
+        - name: postgres-common-data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-common
+spec:
+  selector:
+    app: postgres-common
+  ports:
+    - protocol: TCP
+      port: 5436
+      targetPort: 5432

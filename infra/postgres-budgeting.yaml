@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-budgeting
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-budgeting
+  template:
+    metadata:
+      labels:
+        app: postgres-budgeting
+    spec:
+      containers:
+        - name: postgres-budgeting
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: database_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: postgres_password
+            - name: POSTGRES_DB
+              value: budgeting_service
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-budgeting-data
+      volumes:
+        - name: postgres-budgeting-data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-budgeting
+spec:
+  selector:
+    app: postgres-budgeting
+  ports:
+    - protocol: TCP
+      port: 5435
+      targetPort: 5432

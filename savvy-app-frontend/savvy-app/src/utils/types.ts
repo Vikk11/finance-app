@@ -7,7 +7,10 @@ export type RootStackParamList = {
 export type AuthStackParamList = {
     Login: undefined;
     Signup: undefined;
+    Home: undefined;
 };
 
 export type AuthScreenProps<T extends keyof AuthStackParamList> =
     NativeStackScreenProps<AuthStackParamList, T>;
+
+export type AppStackParamList = RootStackParamList & AuthStackParamList;

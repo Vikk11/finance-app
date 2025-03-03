@@ -104,6 +104,23 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         fontSize: 12,
         color: colors.text,
+    },
+    googleButtonText: {
+        color: colors.lighter_text,
+        fontSize: 15,
+        fontWeight: 'bold',
+    },
+    googleButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        color: colors.text,
+        backgroundColor: '#fff',
+        paddingVertical: 12,
+        borderRadius: 8,
+        borderWidth: 0.5,
+        borderColor: colors.light_text,
+        justifyContent: 'center',
+        width: '80%',
     }
 });
 

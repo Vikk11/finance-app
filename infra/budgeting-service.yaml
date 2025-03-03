@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: budgeting-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: budgeting-service
+  template:
+    metadata:
+      labels:
+        app: budgeting-service
+    spec:
+      containers:
+        - name: budgeting-service
+          image: infra-budgeting-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres-budgeting:5432/budgeting_service
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: database_user
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: postgres_password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: budgeting-service
+spec:
+  type: ClusterIP
+  selector:
+    app: budgeting-service
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
