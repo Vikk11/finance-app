@@ -29,6 +29,13 @@ const styles = StyleSheet.create({
         fontSize: 30,
         color: colors.text,
         fontWeight: 'bold',
+    },
+    text: {
+        fontSize: 14,
+        color: colors.text,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginTop:5,
     }
 });
 

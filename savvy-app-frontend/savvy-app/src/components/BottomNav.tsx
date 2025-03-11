@@ -8,10 +8,10 @@ import LogoutIcon from '../../assets/icons/logout-icon.svg';
 import { signOut } from 'firebase/auth';
 import { auth } from '../utils/firebaseConfig';
 import styles from './styles';
-import { AppStackParamList } from "../utils/types";
+import { RootStackParamList } from "../utils/types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-type NavigationProp = NativeStackNavigationProp<AppStackParamList>;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const BottomNav: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
@@ -22,20 +22,20 @@ const BottomNav: React.FC = () => {
             Alert.alert('Logged out', 'You have been logged out');
             navigation.reset({
                 index: 0,
-                routes: [{ name: 'Login' }],
+                routes: [{ name: "Auth", params: { screen: "Login" } }],
             });
         } catch (error: any){
             Alert.alert('Logout failed.', error.message);
         }
     };
 
-    const goToPage = (page: keyof AppStackParamList) => {
-        navigation.navigate(page);
+    const goToPage = (page: keyof RootStackParamList, params?: object) => {
+        navigation.navigate(page as any, params);
     };
 
     return (
       <View style={styles.navContainer}>
-          <TouchableOpacity onPress={() => goToPage('Home')}>
+          <TouchableOpacity onPress={() => goToPage("Auth", { screen: "Home" })}>
               <HomeIcon width={45} height={45} />
           </TouchableOpacity>
 

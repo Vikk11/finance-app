@@ -1,130 +1,98 @@
+networks:
+  savvy-network:
+    driver: bridge
+    name: savvy-network
+
 services:
-  postgres-user:
-    image: postgres:15
-    container_name: postgres-user
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
     restart: on-failure
-    secrets:
-      - postgres_password
+    ports:
+      - "2181:2181"
     environment:
-      POSTGRES_USER: /run/secrets/database_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-      POSTGRES_DB: user_service
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_user_data:/var/lib/postgresql/data
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - savvy-network
 
-  postgres-transaction:
-    image: postgres:15
-    container_name: postgres-transaction
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
     restart: on-failure
-    secrets:
-      - postgres_password
-    environment: 
-      POSTGRES_USER: /run/secrets/database_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-      POSTGRES_DB: transaction_service
     ports:
-      - "5434:5432"
-    volumes:
-      - postgres_transaction_data:/var/lib/postgresql/data
-
-  postgres-budgeting:
-    image: postgres:15
-    container_name: postgres-budgeting
-    restart: on-failure
-    secrets: 
-      - postgres_password
+      - "9093:9093"
     environment:
-      POSTGRES_USER: /run/secrets/database_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-      POSTGRES_DB: budgeting_service
-    ports:
-      - "5435:5432"
-    volumes:
-      - postgres_budgeting_data:/var/lib/postgresql/data
-
-  postgres-common:
-    image: postgres:15
-    container_name: postgres-common
-    restart: on-failure
-    secrets:
-      - postgres_password
-    environment:
-      POSTGRES_USER: /run/secrets/database_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-      POSTGRES_DB: common_data
-    ports:
-      - "5436:5432"
-    volumes:
-      - postgres_common_data:/var/lib/postgresql/data
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    networks:
+      - savvy-network
 
   user-service:
     build:
       context: ../savvy-app-backend/user-service
+      dockerfile: Dockerfile
     container_name: user-service
     restart: on-failure
-    secrets:
-      - postgres_password
     ports:
       - "8080:8080"
     volumes:
-      - ../savvy-app-backend/user-service:/app
-    depends_on:
-      - postgres-user
+      - ../savvy-app-backend/user-service:/app/src
+    env_file:
+      - .env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-user:5432/user-service
-      SPRING_DATASOURCE_USERNAME: /run/secrets/database_user
-      SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/postgres_password
-      DATABASE_USER_FILE: /run/secrets/database_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-    
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5433/user_service
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      KAFKA_BROKER: kafka:9093
+    networks:
+      - savvy-network
+
   transaction-service:
     build:
       context: ../savvy-app-backend/transaction-service
+      dockerfile: Dockerfile
     container_name: transaction-service
     restart: on-failure
-    secrets:
-      - postgres_password
     ports:
       - "8081:8081"
     volumes:
-      - ../savvy-app-backend/transaction-service:/app
-    depends_on:
-      - postgres-transaction
-      - postgres-common
+      - ../savvy-app-backend/transaction-service:/app/src
+    env_file:
+      - .env
     environment:
-      #Primary DB
-      PRIMARY_DATASOURCE_URL: jdbc:postgresql://postgres-transaction:5432/transaction-service
-      PRIMARY_DATASOURCE_USERNAME: /run/secrets/database_user
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5433/transaction_service
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      KAFKA_BROKER: kafka:9093
+    networks:
+      - savvy-network
 
-      #SharedD DB
-      SHARED_DATASOURCE_URL: jdbc:postgresql://postgres-common:5432/common-data
-      SHARED_DATASOURCE_USERNAME: /run/secrets/database_user
-
-      SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/postgres_password
-      DATABASE_USER_FILE: /run/secrets/database_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-    
   budgeting-service:
     build:
       context: ../savvy-app-backend/budgeting-service
+      dockerfile: Dockerfile
     container_name: budgeting-service
     restart: on-failure
-    secrets:
-      - postgres_password
-    ports: 
+    ports:
       - "8082:8082"
     volumes:
-      - ../savvy-app-backend/budgeting-service:/app
-    depends_on:
-      - postgres-budgeting
+      - ../savvy-app-backend/budgeting-service:/app/src
+    env_file:
+      - .env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-budgeting:5432/budgeting-service
-      SPRING_DATASOURCE_USERNAME: /run/secrets/database_user
-      SPRING_DATASOURCE_PASSWORD_FILE: /run/secrets/postgres_password
-      DATABASE_USER_FILE: /run/secrets/database_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5433/budgeting_service
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      KAFKA_BROKER: kafka:9093
+    networks:
+      - savvy-network
 
   api-gateway:
     build: ../savvy-app-gateway
@@ -136,16 +104,10 @@ services:
       - user-service
       - transaction-service
       - budgeting-service
+    networks:
+      - savvy-network
 
 volumes:
   postgres_user_data:
   postgres_transaction_data:
   postgres_budgeting_data:
-  postgres_common_data:
-
-secrets:
-  postgres_password:
-    file: ../secrets/postgres_password
-  database_user:
-    file: ../secrets/database_user
-  

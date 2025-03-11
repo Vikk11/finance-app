@@ -1,7 +1,7 @@
-FROM gradle:8.6-jdk17
+FROM openjdk:17-jdk-slim
 
 WORKDIR /app
-COPY . .
-EXPOSE 8081
 
-CMD ["gradle", "bootRun"]
+COPY build/libs/transaction-service-0.0.1-SNAPSHOT.jar app.jar
+
+CMD ["java", "-jar", "app.jar"]

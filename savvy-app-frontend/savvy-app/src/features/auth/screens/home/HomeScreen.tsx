@@ -8,8 +8,18 @@ import ScanIcon from "../../../../../assets/icons/scan-icon.svg";
 import GroupsIcon from "../../../../../assets/icons/groups-icon.svg";
 import components from '../../../../styles/components';
 import DefaultIcon from "../../../../../assets/icons/default-profile-icon.svg"
+import {RootStackParamList} from "../../../../utils/types";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {useNavigation} from "@react-navigation/native";
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const HomeScreen: React.FC = () => {
+    const navigation = useNavigation<NavigationProp>();
+    const goToPage = (page: keyof RootStackParamList, params?: object) => {
+        navigation.navigate(page as any, params);
+    };
+
     return (
         <View style={{flex:1}}>
             <View style={styles.homeContainer}>
@@ -24,21 +34,33 @@ const HomeScreen: React.FC = () => {
                     <Text style = {components.moneyText}>€2,400.45</Text>
                 </View>
                 <View style={styles.container}>
-                    <TouchableOpacity style={styles.buttons}>
-                        <AddIcon width={40} height={40} />
-                    </TouchableOpacity>
+                    <View style = {{flexDirection: "column"}}>
+                        <TouchableOpacity style={styles.buttons} onPress={() => goToPage("Transactions", { screen: "AddMoney" })}>
+                            <AddIcon width={40} height={40} />
+                        </TouchableOpacity>
+                        <Text style={styles.text}>Top up</Text>
+                    </View>
 
-                    <TouchableOpacity style={styles.buttons}>
-                        <RequestIcon width={40} height={40} />
-                    </TouchableOpacity>
+                    <View style= {{flexDirection:'column'}}>
+                        <TouchableOpacity style={styles.buttons}>
+                            <RequestIcon width={40} height={40} />
+                        </TouchableOpacity>
+                        <Text style={styles.text}>Requests</Text>
+                    </View>
 
-                    <TouchableOpacity style={styles.buttons}>
-                        <ScanIcon width={40} height={40} />
-                    </TouchableOpacity>
+                    <View style={{flexDirection:'column'}}>
+                        <TouchableOpacity style={styles.buttons}>
+                            <ScanIcon width={40} height={40} />
+                        </TouchableOpacity>
+                        <Text style={styles.text}>Scan</Text>
+                    </View>
 
-                    <TouchableOpacity style={styles.buttons}>
-                        <GroupsIcon width={40} height={40} />
-                    </TouchableOpacity>
+                    <View style={{flexDirection:'column'}}>
+                        <TouchableOpacity style={styles.buttons}>
+                            <GroupsIcon width={40} height={40} />
+                        </TouchableOpacity>
+                        <Text style={styles.text}>Groups</Text>
+                    </View>
                 </View>
                 <View style={styles.container}>
                     <Text>Recent Transactions</Text>
