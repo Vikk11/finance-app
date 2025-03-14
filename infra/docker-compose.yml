@@ -42,8 +42,6 @@ services:
     restart: on-failure
     ports:
       - "8080:8080"
-    volumes:
-      - ../savvy-app-backend/user-service:/app/src
     env_file:
       - .env
     environment:
@@ -62,8 +60,6 @@ services:
     restart: on-failure
     ports:
       - "8081:8081"
-    volumes:
-      - ../savvy-app-backend/transaction-service:/app/src
     env_file:
       - .env
     environment:
@@ -82,8 +78,6 @@ services:
     restart: on-failure
     ports:
       - "8082:8082"
-    volumes:
-      - ../savvy-app-backend/budgeting-service:/app/src
     env_file:
       - .env
     environment:
@@ -106,8 +100,3 @@ services:
       - budgeting-service
     networks:
       - savvy-network
-
-volumes:
-  postgres_user_data:
-  postgres_transaction_data:
-  postgres_budgeting_data:

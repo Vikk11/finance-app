@@ -36,7 +36,42 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginTop:5,
-    }
+    },
+    transactionRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding:10,
+        borderBottomWidth: 1,
+        borderBottomColor: "#ddd",
+    },
+    iconContainer: {
+        width: 35,
+        height: 35,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    transactionDetails: {
+        flex: 1,
+        marginLeft:10,
+    },
+    transactionName: {
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    transactionDate: {
+        fontSize: 12,
+        color: "gray",
+    },
+    paymentType: {
+        fontSize: 16,
+        fontWeight: "bold",
+        marginRight: 20,
+    },
+    transactionAmount: {
+        fontSize: 16,
+        fontWeight: "bold",
+    },
 });
 
 export default styles;

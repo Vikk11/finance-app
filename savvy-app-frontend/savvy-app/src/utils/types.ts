@@ -14,6 +14,7 @@ export type AuthStackParamList = {
 
 export type TransactionStackParamList = {
     AddMoney: undefined;
+    AddExpense: undefined;
 };
 
 export type AuthScreenProps<T extends keyof AuthStackParamList> =

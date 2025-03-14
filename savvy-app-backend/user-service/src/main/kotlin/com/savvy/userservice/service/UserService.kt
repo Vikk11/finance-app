@@ -25,4 +25,8 @@ class UserService(private val userRepository: UserRepository) {
     fun getUserIdByFirebaseUid(userUid: String): Int? {
         return userRepository.findByUserUid(userUid)?.id
     }
+
+    fun getUserById(userId: Int?): User? {
+        return userId?.let { userRepository.findById(it).orElse(null)}
+    }
 }

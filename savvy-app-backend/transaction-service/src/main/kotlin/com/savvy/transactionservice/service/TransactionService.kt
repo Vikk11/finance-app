@@ -6,6 +6,8 @@ import com.savvy.transactionservice.model.Transaction
 import com.savvy.transactionservice.model.TransactionEvent
 import com.savvy.transactionservice.model.TransactionType
 import com.savvy.transactionservice.repository.TransactionRepository
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -39,5 +41,9 @@ class TransactionService(
 
         transactionEventProducer.publishTransactionEvent(transactionEvent)
         return savedTransaction
+    }
+
+    fun getRecentTransactionsByUser(userId: Int, limit: Int): List<Transaction> {
+        return transactionRepository.findRecentByUserId(userId, PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "date")))
     }
 }

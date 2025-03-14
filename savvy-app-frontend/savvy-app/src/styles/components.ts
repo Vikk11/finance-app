@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: colors.accent,
         borderRadius:15,
-        paddingVertical: 10,
         paddingHorizontal:15,
         marginBottom:15,
         marginTop:5,
@@ -32,7 +31,7 @@ const styles = StyleSheet.create({
         fontSize: 32,
         color: colors.light_text,
         fontWeight: 'bold',
-        paddingVertical: 10,
+        paddingVertical: 20,
     },
     pageTitle: {
         fontSize: 30,

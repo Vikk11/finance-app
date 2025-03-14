@@ -8,10 +8,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig {
+class SecurityConfig(private val firebaseAuthenticationFilter: FirebaseAuthenticationFilter) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
@@ -21,6 +22,7 @@ class SecurityConfig {
                             .requestMatchers("/api/users/firebase/**").permitAll()
                             .anyRequest().authenticated();
                 }
+                .addFilterBefore(firebaseAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
                 .exceptionHandling { it.authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))}
                 .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)}
         return http.build()

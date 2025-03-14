@@ -39,7 +39,7 @@ const BottomNav: React.FC = () => {
               <HomeIcon width={45} height={45} />
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => goToPage("Transactions", { screen: "AddExpense"})}>
               <TransferIcon width={40} height={40} />
           </TouchableOpacity>
 

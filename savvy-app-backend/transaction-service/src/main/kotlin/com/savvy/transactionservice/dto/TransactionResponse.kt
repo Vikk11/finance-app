@@ -1,5 +1,6 @@
 package com.savvy.transactionservice.dto
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.savvy.transactionservice.model.Transaction
 import com.savvy.transactionservice.model.TransactionType
 import java.math.BigDecimal
@@ -13,7 +14,10 @@ data class TransactionResponse(
         val categoryId: Long?,
         val relatedUserId: Long?,
         val name: String?,
+
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         val date: LocalDateTime,
+
         val createdAt: LocalDateTime,
         val updatedAt: LocalDateTime
 ) {

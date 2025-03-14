@@ -1,24 +1,23 @@
 package com.savvy.transactionservice.controller
 
+import com.savvy.transactionservice.dto.CategoryDTO
 import com.savvy.transactionservice.dto.TransactionRequest
 import com.savvy.transactionservice.dto.TransactionResponse
-import com.savvy.transactionservice.service.FirebaseAuthService
+import com.savvy.transactionservice.model.Transaction
+import com.savvy.transactionservice.service.CategoryService
 import com.savvy.transactionservice.service.TransactionService
 import com.savvy.transactionservice.service.UserServiceClient
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/transactions")
 class TransactionController(
         private val transactionService: TransactionService,
         private val userServiceClient: UserServiceClient,
-        private val firebaseAuthService: FirebaseAuthService
+        private val categoryService: CategoryService
 ){
 
     @PostMapping("/add")
@@ -36,5 +35,21 @@ class TransactionController(
 
         val transaction = transactionService.addTransaction(userId, request)
         return ResponseEntity.ok(TransactionResponse.from(transaction))
+    }
+
+    @GetMapping("/categories")
+    fun getCategories(): ResponseEntity<List<CategoryDTO>>{
+        val categories = categoryService.getAllCategories()
+        return ResponseEntity.ok(categories)
+    }
+
+    @GetMapping("/recentTransactions")
+    fun getRecentTransactions(): List<Transaction> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val firebaseUid = authentication.principal as String
+        val userId = userServiceClient.getUserIdFromFirebaseUid(firebaseUid)
+                ?: return emptyList()
+
+        return transactionService.getRecentTransactionsByUser(userId, 2)
     }
 }
