@@ -17,7 +17,10 @@ jobs:
           java-version: '17'
 
       - name: Grant Execute Permission to Gradle Wrapper
-        run: chmod +x savvy-app-backend/**/gradlew
+        run: | 
+          chmod +x savvy-app-backend/user-service/gradlew
+          chmod +x savvy-app-backend/transaction-service/gradlew
+          chmod +x savvy-app-backend/budgeting-service/gradlew
 
       - name: Build JARs
         run: |
@@ -27,6 +30,9 @@ jobs:
 
       - name: Upload JARs
         uses: actions/upload-artifact@v4
-        with:
+        with: 
           name: built-jars
-          path: savvy-app-backend/**/build/libs/*.jar
+          path: |
+            savvy-app-backend/user-service/build/libs/*.jar
+            savvy-app-backend/transaction-service/build/libs/*.jar
+            savvy-app-backend/budgeting-service/build/libs/*.jar
