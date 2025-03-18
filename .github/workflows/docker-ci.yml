@@ -25,7 +25,7 @@ jobs:
 
       - name: Start Services with Docker Compose
         run: |
-          docker-compose -f infra/docker-compose.yml up -d
+          docker-compose --env-file .env -f infra/docker-compose.yml up -d
 
       - name: Shut Down Services
         run: docker-compose -f infra/docker-compose.yml down
