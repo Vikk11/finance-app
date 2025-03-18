@@ -18,11 +18,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Create Docker Secrets Files
+      - name: Create .env File
         run: |
           mkdir -p secrets
-          echo "${{ secrets.DATABASE_USER }}" > secrets/database_user
-          echo "${{ secrets.POSTGRES_PASSWORD }}" > secrets/postgres_password
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DATABASE_USER }}" >> .env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
 
       - name: Start Services with Docker Compose
         run: |
