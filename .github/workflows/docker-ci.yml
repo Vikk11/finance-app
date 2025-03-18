@@ -24,6 +24,14 @@ jobs:
           echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DATABASE_USER }}" > infra/.env
           echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> infra/.env
 
+      - name: Download Pre-Built JARs
+        uses: actions/download-artifact@v3
+        with:
+          path: savvy-app-backend/ 
+
+      - name: Verify JARs Downloaded
+        run: ls -la savvy-app-backend/*/build/libs/
+
       - name: Start Services with Docker Compose
         run: |
           docker-compose --env-file infra/.env -f infra/docker-compose.yml up -d
