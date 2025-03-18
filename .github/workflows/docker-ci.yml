@@ -20,14 +20,11 @@ jobs:
 
       - name: Create .env File
         run: |
-          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DATABASE_USER }}" >> .env
-          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-
-      - name: List Files in Directory
-        run: ls -la infra/
-
-      - name: Print .env File Content
-        run: cat infra/.env
+          touch infra/.env  # Ensures the file is created
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DATABASE_USER }}" > infra/.env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> infra/.env
+          ls -la infra/
+          cat infra/.env
 
       - name: Start Services with Docker Compose
         run: |
