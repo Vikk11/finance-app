@@ -3,12 +3,8 @@ name: Build JAR Files
 on: [push, pull_request]
 
 jobs:
-  build-jar:
+  build-jars:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        service: [user-service, transaction-service, budgeting-service]  # Add more if needed
 
     steps:
       - name: Checkout Repository
@@ -20,13 +16,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build JAR for ${{ matrix.service }}
+      - name: Build JARs
         run: |
-          cd savvy-app-backend/${{ matrix.service }}
-          ./gradlew bootJar
+          cd savvy-app-backend/user-service && ./gradlew bootJar
+          cd ../transaction-service && ./gradlew bootJar
+          cd ../budgeting-service && ./gradlew bootJar
 
-      - name: Upload JAR for ${{ matrix.service }}
+      - name: Upload JARs
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.service }}-jar
-          path: savvy-app-backend/${{ matrix.service }}/build/libs/*.jar
+          name: built-jars
+          path: savvy-app-backend/**/build/libs/*.jar
