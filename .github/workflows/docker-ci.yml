@@ -23,6 +23,12 @@ jobs:
           echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DATABASE_USER }}" >> .env
           echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
 
+      - name: List Files in Directory
+        run: ls -la infra/
+
+      - name: Print .env File Content
+        run: cat infra/.env
+
       - name: Start Services with Docker Compose
         run: |
           docker-compose --env-file .env -f infra/docker-compose.yml up -d
