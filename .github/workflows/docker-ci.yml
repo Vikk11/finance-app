@@ -23,12 +23,10 @@ jobs:
           touch infra/.env  # Ensures the file is created
           echo "SPRING_DATASOURCE_USERNAME=${{ secrets.DATABASE_USER }}" > infra/.env
           echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> infra/.env
-          ls -la infra/
-          cat infra/.env
 
       - name: Start Services with Docker Compose
         run: |
-          docker-compose --env-file .env -f infra/docker-compose.yml up -d
+          docker-compose --env-file infra/.env -f infra/docker-compose.yml up -d
 
       - name: Shut Down Services
         run: docker-compose -f infra/docker-compose.yml down
