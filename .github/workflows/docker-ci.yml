@@ -1,21 +1,15 @@
 name: Docker CI
 
-on: [push, pull_request]
+on:
+  workflow_run:
+    workflows: ["User Service CI", "Transaction Service CI", "Budgeting Service CI"]
+    types:
+      - completed
 
 jobs:
-  user-service:
-    uses: ./.github/workflows/user-service-ci.yml
-
-  transaction-service:
-    uses: ./.github/workflows/transaction-service-ci.yml
-
-  budgeting-service:
-    uses: ./.github/workflows/budgeting-service-ci.yml
-    
   build-test:
     runs-on: ubuntu-latest
-    needs: [user-service, transaction-service, budgeting-service]
-
+    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
