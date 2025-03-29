@@ -8,11 +8,11 @@ import java.math.BigDecimal
 data class User(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "id")
-        val id: Int? = null,
+        val id: Long? = null,
 
         @Column(unique = true, nullable = false)
         val userUid: String,
 
         @Column(nullable = false)
-        var currentBalance: BigDecimal = BigDecimal.ZERO
+        var currentBalance: BigDecimal
 )

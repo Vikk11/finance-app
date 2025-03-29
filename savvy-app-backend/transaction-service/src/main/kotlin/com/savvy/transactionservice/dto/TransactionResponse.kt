@@ -7,11 +7,11 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class TransactionResponse(
-        val id: Int?,
-        val userId: Int,
+        val id: Long?,
+        val userId: Long,
         val amount: BigDecimal,
         val type: TransactionType,
-        val categoryId: Long?,
+        val categoryId: Long,
         val relatedUserId: Long?,
         val name: String?,
 

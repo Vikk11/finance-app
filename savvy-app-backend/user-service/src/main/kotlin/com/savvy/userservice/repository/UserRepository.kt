@@ -4,7 +4,7 @@ import com.savvy.userservice.model.User
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
-interface UserRepository : JpaRepository<User, Int> {
+interface UserRepository : JpaRepository<User, Long> {
     fun findByUserUid(userUid: String): User?
-    fun findById(userId: Int?): Optional<User>
+    fun findById(userId: Long?): Optional<User>
 }

@@ -9,9 +9,10 @@ import java.time.LocalDateTime
 data class Transaction(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "id")
-        val id: Int? = null,
+        val id: Long? = null,
 
-        val userId: Int,
+        @Column(nullable = false)
+        val userId: Long,
 
         @Enumerated(EnumType.STRING)
         val type: TransactionType,
@@ -19,7 +20,7 @@ data class Transaction(
         @Column(nullable = false)
         val amount: BigDecimal,
 
-        val categoryId: Long? = null,
+        val categoryId: Long,
         val relatedUserId: Long? = null,
         val name: String? = null,
 

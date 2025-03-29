@@ -6,11 +6,14 @@ import com.google.firebase.auth.FirebaseAuth
 @Service
 class FirebaseAuthService {
     fun verifyTokenAndGetUid(token: String): String? {
-        return try {
-            val decodedToken = FirebaseAuth.getInstance().verifyIdToken(token)
-            decodedToken.uid
-        } catch (e: Exception) {
-            null
-        }
+        println("Verifying token: $token")
+
+        return runCatching {
+            FirebaseAuth.getInstance().verifyIdToken(token).uid
+        }.onSuccess { uid ->
+            println("Decoded token UID: $uid")
+        }.onFailure { e ->
+            println("Error verifying token: ${e.message}")
+        }.getOrNull()
     }
 }

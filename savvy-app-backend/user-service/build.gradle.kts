@@ -17,6 +17,9 @@ java {
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://jitpack.io")
+    }
 }
 
 dependencies {
@@ -24,10 +27,14 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.springframework.retry:spring-retry")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.2.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.hibernate.orm:hibernate-core:6.2.3.Final")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.postgresql:postgresql:42.6.0")
+    implementation("com.github.Vikk11:common-models:v1.0.1")
     implementation("com.google.firebase:firebase-admin:9.2.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

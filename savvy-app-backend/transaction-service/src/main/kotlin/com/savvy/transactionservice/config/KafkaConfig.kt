@@ -1,6 +1,6 @@
 package com.savvy.transactionservice.config
 
-import com.savvy.transactionservice.model.TransactionEvent
+import com.savvy.commonmodels.TransactionEvent
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.context.annotation.Bean

@@ -8,8 +8,7 @@ import {getAuth} from "firebase/auth";
 import {TransactionRequest} from "../../../../utils/dataTypes";
 import {addTransaction} from "../../api/transactionApi";
 import { Picker } from "@react-native-picker/picker";
-import { getCategories } from '../../api/transactionApi';
-import {auth} from "../../../../utils/firebaseConfig";
+import {fetchCategories} from "../../../../utils/functions";
 
 const AddExpense: React.FC<TransactionScreenProps<"AddExpense">> = ( { navigation } ) => {
     const [amount, setAmount] = useState("");
@@ -25,27 +24,6 @@ const AddExpense: React.FC<TransactionScreenProps<"AddExpense">> = ( { navigatio
             setDate(selectedDate);
         }
     };
-
-    const getToken = async () =>{
-        const user = auth.currentUser;
-        if(!user){
-            console.error("No user found.")
-            return null;
-        }
-
-        return await user.getIdToken();
-    }
-
-    const fetchCategories = async () => {
-        try {
-            const token = await getToken();
-            if(!token) return;
-            const response = await getCategories(token);
-            setCategories(response);
-        } catch (error) {
-            console.error("Error fetching categories: ", error);
-        }
-    }
 
     const handleAddExpense = async () => {
         if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
@@ -88,7 +66,11 @@ const AddExpense: React.FC<TransactionScreenProps<"AddExpense">> = ( { navigatio
     };
 
     useEffect(() => {
-        fetchCategories();
+        const loadCategories = async () => {
+            const data = await fetchCategories();
+            if (data) setCategories(data);
+        };
+        loadCategories();
     }, [])
 
     return (

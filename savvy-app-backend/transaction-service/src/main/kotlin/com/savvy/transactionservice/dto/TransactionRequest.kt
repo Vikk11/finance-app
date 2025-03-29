@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 data class TransactionRequest(
         val amount: BigDecimal,
         val type: TransactionType,
-        val categoryId: Long? = null,
+        val categoryId: Long,
         val relatedUserId: Long? = null,
         val name: String? = null,
         val date: LocalDateTime? = LocalDateTime.now()

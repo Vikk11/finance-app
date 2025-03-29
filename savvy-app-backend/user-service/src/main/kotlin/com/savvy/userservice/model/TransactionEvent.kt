@@ -3,7 +3,8 @@ package com.savvy.userservice.model
 import java.math.BigDecimal
 
 data class TransactionEvent(
-        val userId: Int,
+        val userId: Long,
+        val type: String,
         val amount: BigDecimal,
-        val type: String
+        val categoryId: Long?
 )

@@ -15,7 +15,7 @@ import java.math.BigDecimal
 class UserController(private val userService: UserService) {
 
     @GetMapping("/firebase/{firebaseUid}")
-    fun getUserIdByFirebaseUid(@PathVariable firebaseUid: String): ResponseEntity<Int?> {
+    fun getUserIdByFirebaseUid(@PathVariable firebaseUid: String): ResponseEntity<Long?> {
         val userId = userService.getUserIdByFirebaseUid(firebaseUid)
         return if (userId != null) {
             ResponseEntity.ok(userId)

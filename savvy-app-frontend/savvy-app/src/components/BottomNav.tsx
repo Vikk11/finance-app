@@ -3,6 +3,7 @@ import { View, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import HomeIcon from '../../assets/icons/home-icon.svg';
 import TransferIcon from '../../assets/icons/transfers-icon.svg';
+import GroupsIcon from '../../assets/icons/groups-icon.svg';
 import ReportIcon from '../../assets/icons/reports-icon.svg';
 import LogoutIcon from '../../assets/icons/logout-icon.svg';
 import { signOut } from 'firebase/auth';
@@ -36,11 +37,15 @@ const BottomNav: React.FC = () => {
     return (
       <View style={styles.navContainer}>
           <TouchableOpacity onPress={() => goToPage("Auth", { screen: "Home" })}>
-              <HomeIcon width={45} height={45} />
+              <HomeIcon width={25} height={25} />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => goToPage("Transactions", { screen: "AddExpense"})}>
-              <TransferIcon width={40} height={40} />
+          <TouchableOpacity>
+              <TransferIcon width={30} height={30} />
+          </TouchableOpacity>
+
+          <TouchableOpacity>
+              <GroupsIcon width={30} height={30} />
           </TouchableOpacity>
 
           <TouchableOpacity>

@@ -30,7 +30,7 @@ const AddMoneyScreen: React.FC<TransactionScreenProps<"AddMoney">> = ( { navigat
             const transactionRequest: TransactionRequest = {
                 amount: parseFloat(amount),
                 type: "INCOME",
-                categoryId: null,
+                categoryId: 15,
                 relatedUserId: null,
                 name: "Added Money",
                 date: null,

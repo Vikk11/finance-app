@@ -3,20 +3,19 @@ package com.savvy.transactionservice.controller
 import com.savvy.transactionservice.dto.CategoryDTO
 import com.savvy.transactionservice.dto.TransactionRequest
 import com.savvy.transactionservice.dto.TransactionResponse
-import com.savvy.transactionservice.model.Transaction
 import com.savvy.transactionservice.service.CategoryService
 import com.savvy.transactionservice.service.TransactionService
-import com.savvy.transactionservice.service.UserServiceClient
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
+import java.math.BigDecimal
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/transactions")
 class TransactionController(
         private val transactionService: TransactionService,
-        private val userServiceClient: UserServiceClient,
         private val categoryService: CategoryService
 ){
 
@@ -30,10 +29,7 @@ class TransactionController(
 
         println("Firebase UID from authentication: $firebaseUid")
 
-        val userId = userServiceClient.getUserIdFromFirebaseUid(firebaseUid)
-                ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-
-        val transaction = transactionService.addTransaction(userId, request)
+        val transaction = transactionService.addTransaction(firebaseUid, request)
         return ResponseEntity.ok(TransactionResponse.from(transaction))
     }
 
@@ -44,12 +40,23 @@ class TransactionController(
     }
 
     @GetMapping("/recentTransactions")
-    fun getRecentTransactions(): List<Transaction> {
+    fun getRecentTransactions(): List<TransactionResponse> {
         val authentication = SecurityContextHolder.getContext().authentication
         val firebaseUid = authentication.principal as String
-        val userId = userServiceClient.getUserIdFromFirebaseUid(firebaseUid)
-                ?: return emptyList()
 
-        return transactionService.getRecentTransactionsByUser(userId, 2)
+        return transactionService.getRecentTransactionsByUser(firebaseUid, 2)
+                .map(TransactionResponse::from)
+    }
+
+    @GetMapping("/summary")
+    fun getTransactionSummary(
+            @RequestParam userId: Long,
+            @RequestParam categoryId: Long,
+            @RequestParam period: String,
+            @RequestParam createdAt: LocalDateTime
+    ): ResponseEntity<BigDecimal> {
+        val totalSpent = transactionService.transactionsSum(userId, categoryId, period, createdAt)
+
+        return ResponseEntity.ok(totalSpent)
     }
 }

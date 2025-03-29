@@ -4,8 +4,8 @@ import BottomNav from '../../../../components/BottomNav';
 import styles from './style';
 import AddIcon from "../../../../../assets/icons/add-icon.svg";
 import RequestIcon from "../../../../../assets/icons/money-request-icon.svg";
-import ScanIcon from "../../../../../assets/icons/scan-icon.svg";
-import GroupsIcon from "../../../../../assets/icons/groups-icon.svg";
+import ExpenseIcon from "../../../../../assets/icons/expense-icon.svg";
+import BudgetIcon from "../../../../../assets/icons/budget-icon.svg";
 import components from '../../../../styles/components';
 import DefaultIcon from "../../../../../assets/icons/default-profile-icon.svg"
 import {RootStackParamList} from "../../../../utils/types";
@@ -14,12 +14,13 @@ import {useNavigation} from "@react-navigation/native";
 import {auth, db} from "../../../../utils/firebaseConfig";
 import {doc, getDoc} from "firebase/firestore";
 import { getUserBalance } from "../../api/userApi";
-import {getCategories, getRecentTransactions} from "../../../transactions/api/transactionApi";
+import {getRecentTransactions} from "../../../transactions/api/transactionApi";
 import {TransactionResponse} from "../../../../utils/dataTypes";
 import AddMoneyIcon from "../../../../../assets/transaction-icons/added-money.svg"
 import ReceiveMoneyIcon from "../../../../../assets/transaction-icons/receive-money.svg";
 import SendMoneyIcon from "../../../../../assets/transaction-icons/send-money.svg";
 import {categoryIcons} from "../../../transactions/utils/categoryIcons";
+import {fetchCategories} from "../../../../utils/functions";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -104,24 +105,7 @@ const HomeScreen: React.FC = () => {
         return <IconComponent width={35} height={35} />;
     };
 
-    const fetchCategories= async () => {
-        try {
-            const user = auth.currentUser;
-            if(!user){
-                console.error("No user found.")
-                return null;
-            }
-
-            const token = await user.getIdToken();
-            if(!token) return;
-            const response = await getCategories(token);
-            setCategories(response);
-        } catch (error) {
-            console.error("Error fetching categories: ", error);
-        }
-    }
-
-    const getCategoryName = (categoryId: number | null) => {
+    const getCategoryName = (categoryId: number) => {
         if (!categoryId) return "Added Money";
 
         const category = categories.find(cat => Number(cat.id) === categoryId);
@@ -132,7 +116,11 @@ const HomeScreen: React.FC = () => {
         fetchUserName();
         fetchBalance();
         fetchRecentTransactions();
-        fetchCategories();
+        const loadCategories = async () => {
+            const data = await fetchCategories();
+            if (data) setCategories(data);
+        };
+        loadCategories();
     }, []);
 
     return (
@@ -164,17 +152,17 @@ const HomeScreen: React.FC = () => {
                     </View>
 
                     <View style={{flexDirection:'column'}}>
-                        <TouchableOpacity style={styles.buttons}>
-                            <ScanIcon width={40} height={40} />
+                        <TouchableOpacity style={styles.buttons} onPress={() => goToPage("Transactions", { screen: "AddExpense" })}>
+                            <ExpenseIcon width={40} height={40} />
                         </TouchableOpacity>
-                        <Text style={styles.text}>Scan</Text>
+                        <Text style={styles.text}>Add Expense</Text>
                     </View>
 
                     <View style={{flexDirection:'column'}}>
-                        <TouchableOpacity style={styles.buttons}>
-                            <GroupsIcon width={40} height={40} />
+                        <TouchableOpacity style={styles.buttons} onPress={() => goToPage("Budgeting", { screen: "AddBudget" })}>
+                            <BudgetIcon width={40} height={40} />
                         </TouchableOpacity>
-                        <Text style={styles.text}>Groups</Text>
+                        <Text style={styles.text}>Budgets</Text>
                     </View>
                 </View>
                 <Text>Recent Transactions</Text>
@@ -187,11 +175,11 @@ const HomeScreen: React.FC = () => {
                                 <View style={styles.iconContainer}>{getTransactionIcon(item)}</View>
                                 <View style={styles.transactionDetails}>
                                     <Text style={styles.transactionName}>
-                                        {item.name || getCategoryName(item.categoryId ?? null) || "Added money"}
+                                        {item.name || getCategoryName(item.categoryId) || "Added money"}
                                     </Text>
                                     <Text style={styles.transactionDate}>{formatDate(item.date)}</Text>
                                 </View>
-                                <Text style={styles.paymentType}>{item.categoryId ? "Payment" : "Add Money"}</Text>
+                                <Text style={styles.paymentType}>{item.categoryId === 15 ? "⎯" : "Payment"}</Text>
                                 <Text style={styles.transactionAmount}>
                                     {item.type === "INCOME" ? "+" : "-"}€{item.amount.toFixed(2)}
                                 </Text>

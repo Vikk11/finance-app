@@ -49,7 +49,7 @@ export const getRecentTransactions = async (token: string) => {
         });
         return response.data;
     } catch (error) {
-        console.error("Error adding transaction:", error);
+        console.error("Error getting transactions:", error);
         throw error;
     }
 }
