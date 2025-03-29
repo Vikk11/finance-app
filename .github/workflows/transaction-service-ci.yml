@@ -1,0 +1,31 @@
+name: Transaction Service CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant Execute Permission to Gradle Wrapper
+        run: chmod +x savvy-app-backend/transaction-service/gradlew
+
+      - name: Build JAR
+        run: |
+          cd savvy-app-backend/transaction-service
+          ./gradlew bootJar
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: user-service-jar
+          path: savvy-app-backend/transaction-service/build/libs/*.jar
