@@ -17,4 +17,9 @@ class KafkaTopicConfig {
     fun transactionTopic(): NewTopic {
         return NewTopic("transaction", 1, 1.toShort())
     }
+
+    @Bean
+    fun transactionTestTopic(): NewTopic {
+        return NewTopic("transaction-test", 1, 1.toShort())
+    }
 }

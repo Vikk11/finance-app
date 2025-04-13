@@ -18,7 +18,8 @@ class SecurityConfig(private val firebaseAuthenticationFilter: FirebaseAuthentic
         http
                 .csrf { it.disable() }
                 .authorizeHttpRequests { auth ->
-                    auth.requestMatchers("/**").authenticated()
+                    auth.requestMatchers("/actuator/**").permitAll()
+                    auth.anyRequest().authenticated()
                 }
                 .addFilterBefore(firebaseAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
                 .exceptionHandling { it.authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))}

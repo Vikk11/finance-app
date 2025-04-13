@@ -14,6 +14,15 @@ class FirebaseAuthenticationFilter(
         private val firebaseAuthService: FirebaseAuthService
 ) : OncePerRequestFilter() {
 
+    private val excludedPaths = listOf(
+            "/actuator", "/actuator/", "/actuator/**"
+    )
+
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        val path = request.requestURI
+        return excludedPaths.any { path.startsWith(it) }
+    }
+
     override fun doFilterInternal(
             request: HttpServletRequest,
             response: HttpServletResponse,

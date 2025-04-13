@@ -20,6 +20,7 @@ class SecurityConfig(private val firebaseAuthenticationFilter: FirebaseAuthentic
                 .authorizeHttpRequests { auth ->
                     auth
                             .requestMatchers("/api/users/firebase/**").permitAll()
+                            .requestMatchers("/actuator/**").permitAll()
                             .anyRequest().authenticated();
                 }
                 .addFilterBefore(firebaseAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)

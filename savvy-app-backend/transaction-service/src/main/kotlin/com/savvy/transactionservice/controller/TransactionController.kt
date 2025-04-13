@@ -48,6 +48,15 @@ class TransactionController(
                 .map(TransactionResponse::from)
     }
 
+    @GetMapping("/list")
+    fun getAllTransactions(): List<TransactionResponse> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val firebaseUid = authentication.principal as String
+
+        return transactionService.getAllTransactions(firebaseUid)
+                .map(TransactionResponse::from)
+    }
+
     @GetMapping("/summary")
     fun getTransactionSummary(
             @RequestParam userId: Long,

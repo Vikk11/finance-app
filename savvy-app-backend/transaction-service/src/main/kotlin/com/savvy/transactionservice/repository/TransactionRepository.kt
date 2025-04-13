@@ -27,4 +27,6 @@ interface TransactionRepository : JpaRepository<Transaction, Long>{
             @Param("startDate") startDate: LocalDateTime,
             @Param("endDate") endDate: LocalDateTime
     ): BigDecimal
+
+    fun findAllByUserId(userId: Long): List<Transaction>
 }

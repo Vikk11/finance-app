@@ -59,6 +59,10 @@ class TransactionService(
         return transactionRepository.findRecentByUserId(getUserId(firebaseUid), PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "date")))
     }
 
+    fun getAllTransactions(firebaseUid: String): List<Transaction> {
+        return transactionRepository.findAllByUserId(getUserId(firebaseUid))
+    }
+
     fun transactionsSum(userId: Long, categoryId: Long, period: String, createdAt: LocalDateTime): BigDecimal {
         val startDate = getStartDate(period, createdAt)
         val totalSpent = transactionRepository.sumTransactions(userId, categoryId, startDate, createdAt)
