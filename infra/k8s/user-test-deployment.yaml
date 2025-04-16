@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service-test
+spec:
+  selector:
+    app: user-service-test
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8084
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service-test
+  template:
+    metadata:
+      labels:
+        app: user-service-test
+    spec:
+      containers:
+        - name: user-service-test
+          image: infra-user-service-test:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8084
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: test
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://test-db:5432/test_db
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: env-secrets
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: env-secrets
+                  key: SPRING_DATASOURCE_PASSWORD
+            - name: KAFKA_BROKER
+              value: kafka.kafka.svc.cluster.local:9092

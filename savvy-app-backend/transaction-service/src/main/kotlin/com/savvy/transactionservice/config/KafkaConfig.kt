@@ -18,7 +18,7 @@ class KafkaConfig {
     @Bean
     fun producerFactory(): ProducerFactory<String, TransactionEvent> {
         val configs = mapOf(
-                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to "kafka:9093",
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to "kafka.kafka.svc.cluster.local:9092",
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java,
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to JsonSerializer::class.java
         )

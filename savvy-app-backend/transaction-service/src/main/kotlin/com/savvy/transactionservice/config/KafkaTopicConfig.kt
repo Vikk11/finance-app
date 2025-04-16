@@ -10,7 +10,7 @@ import org.springframework.kafka.core.KafkaAdmin
 class KafkaTopicConfig {
     @Bean
     fun kafkaAdmin(): KafkaAdmin {
-        return KafkaAdmin(mapOf(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG to "kafka:9093"))
+        return KafkaAdmin(mapOf(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG to "kafka.kafka.svc.cluster.local:9092"))
     }
 
     @Bean

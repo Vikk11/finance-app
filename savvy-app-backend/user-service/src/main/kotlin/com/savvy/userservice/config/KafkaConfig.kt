@@ -18,7 +18,7 @@ class KafkaConfig {
     @Bean
     fun consumerFactory(): ConsumerFactory<String, TransactionEvent> {
         val configs = mutableMapOf<String, Any>(
-                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "kafka:9093",
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "kafka.kafka.svc.cluster.local:9092",
                 ConsumerConfig.GROUP_ID_CONFIG to "user-service-group",
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to JsonDeserializer::class.java,
