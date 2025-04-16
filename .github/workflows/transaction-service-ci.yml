@@ -8,7 +8,6 @@ jobs:
     env:
       SERVICE_NAME: transaction-service
       SERVICE_PATH: savvy-app-backend/transaction-service
-      IMAGE_TAG: ghcr.io/${{ github.repository_owner }}/transaction-service:${{ github.sha }}
 
     steps:
       - name: Checkout repo
@@ -17,18 +16,27 @@ jobs:
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build JAR with Gradle
-        working-directory: savvy-app-backend/transaction-service
-        run: ./gradlew build
-      
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission to Gradle Wrapper
+        run: chmod +x $SERVICE_PATH/gradlew
+
+      - name: Build JAR
+        run: ./gradlew bootJar
+        working-directory: ${{ env.SERVICE_PATH }}
+
       - name: Set lowercase image tag
         run: |
           OWNER_LC=$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')
-          echo "IMAGE_TAG=ghcr.io/${OWNER_LC}/transaction-service:${GITHUB_SHA}" >> $GITHUB_ENV
-      
+          echo "IMAGE_TAG=ghcr.io/${OWNER_LC}/${{ env.SERVICE_NAME }}:${GITHUB_SHA}" >> $GITHUB_ENV
+
       - name: Build Docker image
         run: docker build -t $IMAGE_TAG .
-        working-directory: savvy-app-backend/transaction-service
-      
+        working-directory: ${{ env.SERVICE_PATH }}
+
       - name: Push Docker image
         run: docker push $IMAGE_TAG
