@@ -3,3 +3,12 @@ secrets/
 
 #Ignore local environment files
 *.env
+
+infra/init-dumps/
+load-tests/firebase-service-account.json
+
+infra/k8s/env-secrets.yaml
+
+savvy-app-backend/budgeting-service/src/main/resources/firebase/firebase-service-account.json
+savvy-app-backend/transaction-service/src/main/resources/firebase/firebase-service-account.json
+savvy-app-backend/user-service/src/main/resources/firebase/firebase-service-account.json
