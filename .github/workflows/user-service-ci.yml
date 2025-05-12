@@ -25,6 +25,10 @@ jobs:
       - name: Grant execute permission to Gradle Wrapper
         run: chmod +x $SERVICE_PATH/gradlew
 
+      - name: SonarCloud Analysis
+        run: ./gradlew sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        working-directory: ${{ env.SERVICE_PATH }}
+
       - name: Build JAR
         run: ./gradlew bootJar
         working-directory: ${{ env.SERVICE_PATH }}
