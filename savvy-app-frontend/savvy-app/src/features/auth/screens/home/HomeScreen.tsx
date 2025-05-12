@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {View, Text, TouchableOpacity, FlatList} from 'react-native';
 import BottomNav from '../../../../components/BottomNav';
 import styles from './style';
@@ -10,7 +10,7 @@ import components from '../../../../styles/components';
 import DefaultIcon from "../../../../../assets/icons/default-profile-icon.svg"
 import {RootStackParamList} from "../../../../utils/types";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useFocusEffect} from "@react-navigation/native";
 import {auth, db} from "../../../../utils/firebaseConfig";
 import {doc, getDoc} from "firebase/firestore";
 import { getUserBalance } from "../../api/userApi";
@@ -122,6 +122,18 @@ const HomeScreen: React.FC = () => {
         };
         loadCategories();
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchBalance();
+            fetchRecentTransactions()
+            const loadCategories = async () => {
+                const data = await fetchCategories();
+                if (data) setCategories(data);
+            };
+            loadCategories();
+        }, [])
+    );
 
     return (
         <View style={{flex:1}}>

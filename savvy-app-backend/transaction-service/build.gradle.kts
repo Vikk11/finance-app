@@ -4,6 +4,7 @@ plugins {
     id("org.springframework.boot") version "3.4.3"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.jpa") version "1.9.25"
+    id("org.sonarqube") version "4.4.1.3373"
 }
 
 group = "com.savvy"
@@ -51,6 +52,14 @@ dependencies {
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
+    }
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "Vikk11_finance-app")
+        property("sonar.organization", "vikk11")
+        property("sonar.host.url", "https://sonarcloud.io")
     }
 }
 

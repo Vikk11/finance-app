@@ -27,7 +27,6 @@ export default function () {
         categoryId: categoryId,
         relatedUserId: null,
         name: 'Test Transaction',
-        date: new Date().toISOString(),
     });
 
     const params = {

@@ -113,8 +113,6 @@ services:
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       KAFKA_BROKER: kafka:9093
-    depends_on:
-      - user-db
     networks:
       - savvy-network
 
@@ -131,8 +129,6 @@ services:
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       KAFKA_BROKER: kafka:9093
-    depends_on:
-      - test-db
     networks:
       - savvy-network
 
@@ -151,8 +147,6 @@ services:
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       KAFKA_BROKER: kafka:9093
-    depends_on:
-      - transaction-db
     networks:
       - savvy-network
 
@@ -169,8 +163,6 @@ services:
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       KAFKA_BROKER: kafka:9093
-    depends_on:
-      - test-db
     networks:
       - savvy-network
 
