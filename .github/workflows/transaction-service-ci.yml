@@ -25,6 +25,10 @@ jobs:
       - name: Grant execute permission to Gradle Wrapper
         run: chmod +x $SERVICE_PATH/gradlew
 
+      - name: Build Docker image
+        run: docker build -t $IMAGE_TAG .
+        working-directory: ${{ env.SERVICE_PATH }}
+
       - name: Build JAR
         run: ./gradlew bootJar
         working-directory: ${{ env.SERVICE_PATH }}
