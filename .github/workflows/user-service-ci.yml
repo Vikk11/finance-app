@@ -55,13 +55,11 @@ jobs:
         run: docker build -t $IMAGE_TAG .
         working-directory: ${{ env.SERVICE_PATH }}
 
-      - name: Scan Docker image with Snyk
-        uses: snyk/actions/docker@v1
+      - name: Scan Docker image with Snyk CLI
+        run: |
+          snyk container test ${{ env.IMAGE_TAG }} --severity-threshold=high
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          image: ${{ env.IMAGE_TAG }}
-          args: --severity-threshold=high
 
       - name: Push Docker image
         run: docker push $IMAGE_TAG
