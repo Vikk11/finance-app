@@ -30,9 +30,7 @@ jobs:
         working-directory: ${{ env.SERVICE_PATH }}
         
       - name: Install Snyk CLI
-        run: |
-          curl -sL https://snyk.io/install | bash
-          echo "$HOME/.snyk" >> $GITHUB_PATH
+        run: npm install -g snyk
       
       - name: Snyk Gradle Scan
         run: |
