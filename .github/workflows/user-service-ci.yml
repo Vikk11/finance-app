@@ -35,7 +35,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --all-sub-projects
-        working-directory: ${{ env.SERVICE_PATH }}
+          project-directory: ${{ env.SERVICE_PATH }}
 
       - name: Build JAR
         run: ./gradlew bootJar
