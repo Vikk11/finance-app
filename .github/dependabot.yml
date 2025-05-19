@@ -1,0 +1,31 @@
+version: 2
+updates:
+  # USER SERVICE
+  - package-ecosystem: "gradle"
+    directory: "/savvy-app-backend/user-service"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/savvy-app-backend/user-service"
+    schedule:
+      interval: "weekly"
+
+  # BUDGETING SERVICE
+  - package-ecosystem: "gradle"
+    directory: "/savvy-app-backend/budgeting-service"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/savvy-app-backend/budgeting-service"
+    schedule:
+      interval: "weekly"
+
+  # TRANSACTION SERVICE
+  - package-ecosystem: "gradle"
+    directory: "/savvy-app-backend/transaction-service"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/savvy-app-backend/transaction-service"
+    schedule:
+      interval: "weekly"
