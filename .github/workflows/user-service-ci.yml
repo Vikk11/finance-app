@@ -25,6 +25,21 @@ jobs:
       - name: Grant execute permission to Gradle Wrapper
         run: chmod +x $SERVICE_PATH/gradlew
 
+      - name: SonarCloud Analysis
+        run: ./gradlew sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        working-directory: ${{ env.SERVICE_PATH }}
+        
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+      
+      - name: Snyk Gradle Scan
+        run: |
+          snyk test --all-sub-projects || true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          GRADLE_HOME: ${{ env.SERVICE_PATH }}
+        working-directory: ${{ env.SERVICE_PATH }}
+
       - name: Build JAR
         run: ./gradlew bootJar
         working-directory: ${{ env.SERVICE_PATH }}
@@ -37,6 +52,12 @@ jobs:
       - name: Build Docker image
         run: docker build -t $IMAGE_TAG .
         working-directory: ${{ env.SERVICE_PATH }}
+
+      - name: Scan Docker image with Snyk CLI
+        run: |
+          snyk container test ${{ env.IMAGE_TAG }} --severity-threshold=high || true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Push Docker image
         run: docker push $IMAGE_TAG
