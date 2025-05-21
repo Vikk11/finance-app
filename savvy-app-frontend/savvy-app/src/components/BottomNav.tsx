@@ -40,11 +40,11 @@ const BottomNav: React.FC = () => {
               <HomeIcon width={25} height={25} />
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => goToPage("Auth", { screen: "SendMoney" })}>
               <TransferIcon width={30} height={30} />
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => goToPage("Auth", { screen: "Groups" })}>
               <GroupsIcon width={30} height={30} />
           </TouchableOpacity>
 

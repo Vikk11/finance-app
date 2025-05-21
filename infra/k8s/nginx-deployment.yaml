@@ -29,6 +29,12 @@ data:
             proxy_pass http://user-service;
         }
 
+        location /api/payment_requests/ {
+            limit_req zone=one burst=5;
+            proxy_set_header Authorization $http_authorization;
+            proxy_pass http://user-service;
+        }
+
         location /api/transactions/ {
             limit_req zone=one burst=5;
             proxy_set_header Authorization $http_authorization;

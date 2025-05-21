@@ -53,3 +53,39 @@ export const getRecentTransactions = async (token: string) => {
         throw error;
     }
 }
+
+export const getAllTransactions = async (token: string) => {
+    try {
+        console.log("Token being sent:", `Bearer ${token}`);
+        const response = await axios.get<TransactionResponse[]>(`${TRANSACTION_API}/allTransactions`,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error getting transactions:", error);
+        throw error;
+    }
+}
+
+export const fetchTransactionsPage = async (
+    page: number,
+    size: number,
+    token: string
+): Promise<TransactionResponse[]> => {
+    try {
+        console.log("Token being sent:", `Bearer ${token}`);
+        const response = await axios.get<TransactionResponse[]>(`${TRANSACTION_API}/?page=${page}&size=${size}`,{
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error getting transactions:", error);
+        throw error;
+    }
+};

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, TextInput, TouchableOpacity, Alert, Platform} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, Alert, Platform, Modal} from 'react-native';
 import {createUserWithEmailAndPassword, sendEmailVerification, signInWithCredential, GoogleAuthProvider} from "firebase/auth";
 import { getDoc, doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../../utils/firebaseConfig";
@@ -11,6 +11,8 @@ import * as Yup from 'yup';
 import * as Google from 'expo-auth-session/providers/google';
 import GoogleLogo from '../../../../assets/icons/google_logo.svg';
 import Constants from "expo-constants";
+import {addUser} from "../api/userApi";
+import {getIdToken} from "@react-native-firebase/auth";
 
 const SignupScreen: React.FC<AuthScreenProps<"Signup">> = ( { navigation } ) => {
     const [name, setName] = useState('');
@@ -20,6 +22,8 @@ const SignupScreen: React.FC<AuthScreenProps<"Signup">> = ( { navigation } ) => 
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [username, setUsername] = useState('');
     const [loading, setLoading] = useState(false);
+    const [acceptedPolicy, setAcceptedPolicy] = useState(false);
+    const [showPolicyModal, setShowPolicyModal] = useState(false);
 
     const handleDateChange = (event: any, selectedDate?: Date) => {
         setShowDatePicker(false);
@@ -54,16 +58,27 @@ const SignupScreen: React.FC<AuthScreenProps<"Signup">> = ( { navigation } ) => 
                 createdAt: new Date()
             });
 
+            const token = await user.getIdToken();
+
+            const userRequest = {
+                userUid: user.uid,
+                currentBalance: 0
+            };
+
+            await addUser(token, userRequest);
+
             alert("Signup successful! Please verify your email.");
             navigation.navigate("Login");
         } catch (error: unknown) {
             if(error instanceof Error){
-                alert(`Signup Error: ${error.message}`);
+                console.error("Signup Error: ", error);
+                alert("Signup failed. Please try again.");
             } else {
                 alert("An unknown error occurred.");
             }
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const [request, response, promptAsync] = Google.useAuthRequest({
@@ -165,8 +180,26 @@ const SignupScreen: React.FC<AuthScreenProps<"Signup">> = ( { navigation } ) => 
                     onChangeText={setUsername}
                 />
 
-                <TouchableOpacity style={styles.button} onPress={handleSignup} disabled={loading}>
-                    <Text style={styles.buttonText}>{loading ? "Signing up..." : "Sign up"}</Text>
+                <View style={styles.privacyContainer}>
+                    <TouchableOpacity onPress={() => setAcceptedPolicy(!acceptedPolicy)} style={styles.checkboxContainer}>
+                        <View style={[styles.checkbox, acceptedPolicy && styles.checkedCheckbox]} />
+                        <Text style={styles.checkboxLabel}>
+                            I agree to the{' '}
+                            <Text style={styles.privacyLink} onPress={() => setShowPolicyModal(true)}>
+                                Privacy Policy
+                            </Text>
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity
+                    style={[styles.button, (!acceptedPolicy || loading) && { opacity: 0.6 }]}
+                    onPress={handleSignup}
+                    disabled={!acceptedPolicy || loading}
+                >
+                    <Text style={styles.buttonText}>
+                        {loading ? "Signing up..." : "Sign up"}
+                    </Text>
                 </TouchableOpacity>
 
                 <View style={styles.orContainer}>
@@ -180,6 +213,24 @@ const SignupScreen: React.FC<AuthScreenProps<"Signup">> = ( { navigation } ) => 
                     <Text style={styles.googleButtonText}>Sign up with Google</Text>
                 </TouchableOpacity>
             </View>
+
+            <Modal visible={showPolicyModal} transparent animationType="slide">
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Privacy Policy</Text>
+                        <Text style={styles.modalText}>
+                            We collect minimal personal data to provide account access and financial tracking.
+                            Your data is stored securely and never shared without consent.
+                            You may request your data by emailing us.
+                            You can delete your data at any time.
+                            By signing up, you agree to these terms.
+                        </Text>
+                        <TouchableOpacity style={styles.modalButton} onPress={() => setShowPolicyModal(false)}>
+                            <Text style={styles.modalButtonText}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };

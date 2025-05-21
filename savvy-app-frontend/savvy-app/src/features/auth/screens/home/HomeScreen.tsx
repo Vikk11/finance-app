@@ -157,7 +157,7 @@ const HomeScreen: React.FC = () => {
                     </View>
 
                     <View style= {{flexDirection:'column'}}>
-                        <TouchableOpacity style={styles.buttons}>
+                        <TouchableOpacity style={styles.buttons} onPress={() => goToPage("Auth", { screen: "PaymentRequests" })}>
                             <RequestIcon width={40} height={40} />
                         </TouchableOpacity>
                         <Text style={styles.text}>Requests</Text>
@@ -171,7 +171,7 @@ const HomeScreen: React.FC = () => {
                     </View>
 
                     <View style={{flexDirection:'column'}}>
-                        <TouchableOpacity style={styles.buttons} onPress={() => goToPage("Budgeting", { screen: "AddBudget" })}>
+                        <TouchableOpacity style={styles.buttons} onPress={() => goToPage("Budgeting", { screen: "BudgetsScreen" })}>
                             <BudgetIcon width={40} height={40} />
                         </TouchableOpacity>
                         <Text style={styles.text}>Budgets</Text>
@@ -199,7 +199,7 @@ const HomeScreen: React.FC = () => {
                         )}
                     />
                 </View>
-                <TouchableOpacity style={components.button}>
+                <TouchableOpacity style={components.button} onPress={() => goToPage("Transactions", { screen: "AllTransactions" })}>
                     <Text style={components.buttonText}>See all</Text>
                 </TouchableOpacity>
                 <View style={styles.container}>

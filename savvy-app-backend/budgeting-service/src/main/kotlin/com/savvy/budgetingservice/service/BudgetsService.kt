@@ -61,4 +61,14 @@ class BudgetsService(
 
         budgetsRepository.save(budget)
     }
+
+    fun recalculateAllBudgets() {
+        val budgets = budgetsRepository.findAll()
+
+        for (budget in budgets) {
+            val totalSpent = transactionServiceClient.getTransactionSummary(budget.userId, budget.categoryId, budget.period.toString(), LocalDateTime.now())
+            budget.currentAmount = totalSpent
+            budgetsRepository.save(budget)
+        }
+    }
 }

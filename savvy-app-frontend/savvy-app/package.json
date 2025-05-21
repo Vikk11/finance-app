@@ -30,6 +30,7 @@
     "react-native": "0.76.7",
     "react-native-config": "^1.5.5",
     "react-native-dotenv": "^3.4.11",
+    "react-native-picker-select": "^9.3.1",
     "react-native-svg": "15.8.0",
     "react-native-webview": "^13.12.5",
     "yup": "^1.6.1"

@@ -1,5 +1,6 @@
 package com.savvy.transactionservice.service
 
+import com.savvy.commonmodels.PaymentEvent
 import com.savvy.commonmodels.TransactionEvent
 import com.savvy.transactionservice.dto.TransactionRequest
 import com.savvy.transactionservice.kafka.TransactionEventProducer
@@ -63,19 +64,65 @@ class TransactionService(
         return transactionRepository.findAllByUserId(getUserId(firebaseUid))
     }
 
-    fun transactionsSum(userId: Long, categoryId: Long, period: String, createdAt: LocalDateTime): BigDecimal {
-        val startDate = getStartDate(period, createdAt)
-        val totalSpent = transactionRepository.sumTransactions(userId, categoryId, startDate, createdAt)
+    fun transactionsSum(userId: Long, categoryId: Long, period: String, date: LocalDateTime): BigDecimal {
+        val startDate = getStartDate(period, date)
+        val totalSpent = transactionRepository.sumTransactions(userId, categoryId, startDate, date)
 
         return totalSpent.max(BigDecimal.ZERO)
     }
 
-    private fun getStartDate(period: String, createdAt: LocalDateTime): LocalDateTime {
+    private fun getStartDate(period: String, date: LocalDateTime): LocalDateTime {
         return when (period.lowercase()) {
-            "weekly" -> createdAt.with(DayOfWeek.MONDAY).toLocalDate().atStartOfDay()
-            "monthly" -> createdAt.withDayOfMonth(1).toLocalDate().atStartOfDay()
-            "yearly" -> createdAt.withDayOfYear(1).toLocalDate().atStartOfDay()
+            "weekly" -> date.with(DayOfWeek.MONDAY).toLocalDate().atStartOfDay()
+            "monthly" -> date.withDayOfMonth(1).toLocalDate().atStartOfDay()
+            "yearly" -> date.withDayOfYear(1).toLocalDate().atStartOfDay()
             else ->  throw IllegalArgumentException("Invalid period: $period")
         }
+    }
+
+    fun handlePayment(event: PaymentEvent): Transaction{
+        val senderId = event.requesterId
+        val receiverId = event.payerId ?: throw IllegalArgumentException("payerId cannot be null")
+
+        val expenseTransaction = Transaction(
+                userId = senderId,
+                type = TransactionType.EXPENSE,
+                amount = event.amount,
+                categoryId = 13L,
+                relatedUserId = receiverId,
+                name = event.description ?: "Sent money to user $receiverId",
+                date = LocalDateTime.now(),
+                createdAt = LocalDateTime.now(),
+                updatedAt = LocalDateTime.now()
+        )
+
+        transactionRepository.save(expenseTransaction)
+
+        val incomeTransaction = Transaction(
+                userId = receiverId,
+                type = TransactionType.INCOME,
+                amount = event.amount,
+                categoryId = 13L,
+                relatedUserId = senderId,
+                name = event.description ?: "Received money from user $senderId",
+                date = LocalDateTime.now(),
+                createdAt = LocalDateTime.now(),
+                updatedAt = LocalDateTime.now()
+        )
+
+        transactionRepository.save(incomeTransaction)
+
+        return expenseTransaction
+    }
+
+    fun getTransactionSum(){
+
+    }
+
+    fun getPaginatedTransactions(userUid: String, page: Int, size: Int): List<Transaction> {
+        val pageable = PageRequest.of(page, size, Sort.by("date").descending())
+        val pageResult = transactionRepository.findAllByUserId(getUserId(userUid), pageable)
+
+        return pageResult.toList()
     }
 }

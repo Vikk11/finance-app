@@ -48,7 +48,7 @@ class TransactionController(
                 .map(TransactionResponse::from)
     }
 
-    @GetMapping("/list")
+    @GetMapping("/allTransactions")
     fun getAllTransactions(): List<TransactionResponse> {
         val authentication = SecurityContextHolder.getContext().authentication
         val firebaseUid = authentication.principal as String
@@ -62,10 +62,24 @@ class TransactionController(
             @RequestParam userId: Long,
             @RequestParam categoryId: Long,
             @RequestParam period: String,
-            @RequestParam createdAt: LocalDateTime
+            @RequestParam date: LocalDateTime
     ): ResponseEntity<BigDecimal> {
-        val totalSpent = transactionService.transactionsSum(userId, categoryId, period, createdAt)
+        val totalSpent = transactionService.transactionsSum(userId, categoryId, period, date)
 
         return ResponseEntity.ok(totalSpent)
+    }
+
+    @GetMapping
+    fun getAllTransactions(
+            @RequestParam(defaultValue = "0") page: Int,
+            @RequestParam(defaultValue = "20") size: Int
+    ): ResponseEntity<List<TransactionResponse>> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val firebaseUid = authentication.principal as String
+
+        val transactions = transactionService.getPaginatedTransactions(firebaseUid, page, size)
+                .map(TransactionResponse::from)
+
+        return ResponseEntity.ok(transactions)
     }
 }

@@ -21,7 +21,7 @@ export type TransactionResponse = {
 };
 
 export type BudgetRequest = {
-    categoryId?: number | null;
+    categoryId: number;
     amountLimit: number;
     period: string;
 };
@@ -29,7 +29,7 @@ export type BudgetRequest = {
 export type BudgetResponse = {
     id: number;
     userId: number;
-    categoryId?: number | null;
+    categoryId: number;
     amountLimit: number;
     period: string;
     alertThreshold: number;
@@ -41,4 +41,39 @@ export type BudgetResponse = {
 export type UserRequest = {
     userUid: string;
     currentBalance: number;
+};
+
+export type UserResponse = {
+    id: number;
+    userUid: string;
+};
+
+export type UserDisplayInfo = {
+    id: string;
+    name: string;
+    username: string;
+    isContact: boolean;
+};
+
+export type GroupResponse = {
+    id: number;
+    groupName: string;
+    members: number;
+    createdBy: UserResponse;
+    createdAt: string;
+    updatedAt: string;
 }
+
+export type PaymentRequest = {
+    id: number;
+    requesterId: UserResponse;
+    payerId?: UserResponse;
+    groupId?: GroupResponse;
+    amount: number;
+    description?: string;
+    status: "PENDING" | "PAID" | "DECLINED";
+    isRecurring: boolean;
+    createdAt: string;
+    updatedAt: string;
+    currentUser: UserResponse;
+};

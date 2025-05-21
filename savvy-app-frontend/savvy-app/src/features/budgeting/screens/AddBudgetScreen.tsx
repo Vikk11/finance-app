@@ -85,15 +85,17 @@ const AddBudgetScreen: React.FC<BudgetingScreenProps<"AddBudget">> = ( { navigat
                 </Picker>
             </View>
             <Text style={{marginTop:20}}>Select period</Text>
-            <View style={components.container}>
-                <Picker
-                    selectedValue={period}
-                    onValueChange={(itemValue) => setPeriod(itemValue)}
-                >
-                    <Picker.Item label="Weekly" value={null}/>
-                    <Picker.Item label="Monthly" value={null}/>
-                    <Picker.Item label="Yearly" value={null}/>
-                </Picker>
+            <View style={{ flexGrow: 1 }}>
+                <View style={components.container}>
+                    <Picker
+                        selectedValue={period}
+                        onValueChange={(itemValue) => setPeriod(itemValue)}
+                    >
+                        <Picker.Item label="Weekly" value={null}/>
+                        <Picker.Item label="Monthly" value={null}/>
+                        <Picker.Item label="Yearly" value={null}/>
+                    </Picker>
+                </View>
             </View>
             <TouchableOpacity style={components.button} onPress={handleAddBudget}>
                 <Text style={components.buttonText}>Add budget</Text>

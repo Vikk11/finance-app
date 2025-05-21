@@ -36,7 +36,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
     implementation("org.springframework.kafka:spring-kafka")
     implementation("com.google.firebase:firebase-admin:9.2.0")
-    implementation("com.github.Vikk11:common-models:v1.0.1")
+    implementation("com.github.Vikk11:common-models:v1.0.3")
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

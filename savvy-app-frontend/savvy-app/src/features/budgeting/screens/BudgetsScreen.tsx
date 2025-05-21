@@ -6,8 +6,9 @@ import {auth} from "../../../utils/firebaseConfig";
 import style from "./style";
 import { AntDesign } from '@expo/vector-icons';
 import Budgets from "../components/Budgets";
+import {BudgetingScreenProps} from "../../../utils/types";
 
-const BudgetsScreen = () => {
+const BudgetsScreen: React.FC<BudgetingScreenProps<"BudgetsScreen">> = ( { navigation } ) => {
     const [period, setPeriod] = useState("");
     const [openDrawer, setOpenDrawer] = useState<string | null>(null);
 
@@ -17,22 +18,28 @@ const BudgetsScreen = () => {
 
     return (
         <View style={components.background}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
                 <BackButton />
             </TouchableOpacity>
             <Text style={components.pageTitle}>Budgets</Text>
 
-            {["weekly", "monthly", "yearly"].map((period) =>
-                <View key={period} style={{marginBottom: 10}}>
-                    <TouchableOpacity style={style.drawer} onPress={() => toggleDrawer(period)}>
-                        <Text style={style.drawerText}>
-                            {period.charAt(0).toUpperCase() + period.slice(1)}
-                        </Text>
-                        <AntDesign name={openDrawer === period ? "up" : "down"} size={24} color="#4d4c4c" />
-                    </TouchableOpacity>
+            <View style={{flexGrow:1}}>
+                {["weekly", "monthly"].map((period) =>
+                    <View key={period} style={{marginBottom: 10}}>
+                        <TouchableOpacity style={style.drawer} onPress={() => toggleDrawer(period)}>
+                            <Text style={style.drawerText}>
+                                {period.charAt(0).toUpperCase() + period.slice(1)}
+                            </Text>
+                            <AntDesign name={openDrawer === period ? "up" : "down"} size={24} color="#4d4c4c" />
+                        </TouchableOpacity>
 
-                    {openDrawer === period && <Budgets period={period} />}
-                </View>)}
+                        {openDrawer === period && <Budgets period={period} />}
+                    </View>)}
+            </View>
+
+            <TouchableOpacity style={components.button} onPress={() => navigation.navigate("AddBudget")}>
+                <Text style={components.buttonText}>Add new budget</Text>
+            </TouchableOpacity>
         </View>
     );
 };

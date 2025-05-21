@@ -15,6 +15,6 @@ interface TransactionServiceClient {
             @RequestParam userId: Long,
             @RequestParam categoryId: Long?,
             @RequestParam period: String,
-            @RequestParam createdAt: LocalDateTime
+            @RequestParam date: LocalDateTime
     ): BigDecimal
 }

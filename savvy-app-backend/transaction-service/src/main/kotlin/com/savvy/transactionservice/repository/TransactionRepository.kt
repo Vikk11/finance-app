@@ -2,6 +2,7 @@ package com.savvy.transactionservice.repository
 
 import com.savvy.transactionservice.model.Transaction
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Page
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -29,4 +30,12 @@ interface TransactionRepository : JpaRepository<Transaction, Long>{
     ): BigDecimal
 
     fun findAllByUserId(userId: Long): List<Transaction>
+
+    @Query("SELECT DISTINCT t.userId FROM Transaction t")
+    fun findAllUserIdsWithTransactions(): List<Long>
+
+    @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.userId = :userId")
+    fun sumByUserId(@Param("userId") userId: Long): BigDecimal
+
+    fun findAllByUserId(userId: Long, pageable: Pageable): Page<Transaction>
 }

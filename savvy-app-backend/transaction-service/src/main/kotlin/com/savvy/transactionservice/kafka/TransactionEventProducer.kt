@@ -22,9 +22,9 @@ class TransactionEventProducer(
 
         future.whenComplete { result, ex ->
             if (ex != null){
-                println("Failed to send event: $event, error: ${ex.message}")
+                println("Failed to send event type: ${event.type} from ${event.userId}, error: ${ex.message}")
             } else {
-                println("Successfully sent event: $event, partition: ${result?.recordMetadata?.partition()}, offset: ${result?.recordMetadata?.offset()}")
+                println("Successfully sent event type: ${event.type} from ${event.userId}, partition: ${result?.recordMetadata?.partition()}, offset: ${result?.recordMetadata?.offset()}")
             }
         }
     }

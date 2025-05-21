@@ -1,5 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NavigatorScreenParams } from '@react-navigation/native';
+import {PaymentRequest} from "./dataTypes";
 
 export type RootStackParamList = {
     Auth: NavigatorScreenParams<AuthStackParamList>;
@@ -11,15 +12,27 @@ export type AuthStackParamList = {
     Login: undefined;
     Signup: undefined;
     Home: undefined;
+    PaymentRequests: undefined;
+    CreatePaymentRequest: undefined;
+    Payments: undefined;
+    SendMoney: undefined;
+    AddGroup: undefined;
+    Groups: undefined;
+    RequestDetails: {
+        request: PaymentRequest,
+        status: "ALL" | "PAID" | "PENDING" | "DECLINED" };
+    Settings: undefined;
 };
 
 export type TransactionStackParamList = {
     AddMoney: undefined;
     AddExpense: undefined;
+    AllTransactions: undefined;
 };
 
 export type BudgetingStackParamList = {
     AddBudget: undefined;
+    BudgetsScreen: undefined;
 }
 
 export type AuthScreenProps<T extends keyof AuthStackParamList> =

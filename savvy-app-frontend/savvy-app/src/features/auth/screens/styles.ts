@@ -121,7 +121,79 @@ const styles = StyleSheet.create({
         borderColor: colors.light_text,
         justifyContent: 'center',
         width: '80%',
-    }
+    },
+    privacyContainer: {
+        marginTop: 10,
+        marginBottom: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    checkboxContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    checkbox: {
+        width: 20,
+        height: 20,
+        borderWidth: 1,
+        borderColor: '#999',
+        marginRight: 10,
+        borderRadius: 3,
+    },
+
+    checkedCheckbox: {
+        backgroundColor: '#4CAF50',
+    },
+
+    checkboxLabel: {
+        fontSize: 14,
+        color: '#333',
+    },
+
+    privacyLink: {
+        textDecorationLine: 'underline',
+        color: '#007bff',
+    },
+
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        width: '80%',
+        alignItems: 'center',
+    },
+
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+
+    modalText: {
+        fontSize: 14,
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+
+    modalButton: {
+        padding: 10,
+        backgroundColor: '#007bff',
+        borderRadius: 5,
+    },
+
+    modalButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
 });
 
 export default styles;
