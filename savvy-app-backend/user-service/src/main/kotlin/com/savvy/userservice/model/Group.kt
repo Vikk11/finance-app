@@ -23,7 +23,7 @@ data class Group (
         @Column(nullable = false)
         val updatedAt: LocalDateTime = LocalDateTime.now(),
 
-        @OneToMany(mappedBy = "groupId", cascade = [CascadeType.ALL], orphanRemoval = true)
+        @OneToMany(mappedBy = "group", cascade = [CascadeType.ALL], orphanRemoval = true)
         val users: MutableList<UserGroup> = mutableListOf(),
 
         @OneToMany(mappedBy = "groupId", cascade = [CascadeType.ALL], orphanRemoval = true)

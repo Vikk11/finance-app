@@ -18,6 +18,9 @@ java {
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://jitpack.io")
+    }
 }
 
 dependencies {
@@ -30,6 +33,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.6.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("com.github.Vikk11:common-models:v1.0.3")
     implementation("com.google.firebase:firebase-admin:9.2.0")
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("org.springframework.boot:spring-boot-starter-actuator")

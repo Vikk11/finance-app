@@ -51,6 +51,21 @@ class KafkaConfig {
     }
 
     @Bean
+    fun transactionEventProducerFactory(): ProducerFactory<String, TransactionEvent> {
+        val configs = mapOf(
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to "kafka.kafka.svc.cluster.local:9092",
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java,
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to JsonSerializer::class.java
+        )
+        return DefaultKafkaProducerFactory(configs)
+    }
+
+    @Bean
+    fun transactionEventKafkaTemplate(): KafkaTemplate<String, TransactionEvent> {
+        return KafkaTemplate(transactionEventProducerFactory())
+    }
+
+    @Bean
     fun errorHandler(kafkaTemplate: KafkaTemplate<String, TransactionEvent>): DefaultErrorHandler {
         val recoverer = DeadLetterPublishingRecoverer(kafkaTemplate) { record, _ ->
             TopicPartition("${record.topic()}.DLT", record.partition())

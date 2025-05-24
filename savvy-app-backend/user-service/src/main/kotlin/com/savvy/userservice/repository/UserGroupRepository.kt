@@ -6,6 +6,6 @@ import com.savvy.userservice.model.UserGroup
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface UserGroupRepository : JpaRepository<UserGroup, Long>{
-    fun findByGroupIdAndUserId(groupId: Long, userId: Long): UserGroup?
+    fun findByGroupAndUser(group: Group, user: User): UserGroup?
     fun findAllByGroupId(groupId: Long): List<UserGroup>
 }

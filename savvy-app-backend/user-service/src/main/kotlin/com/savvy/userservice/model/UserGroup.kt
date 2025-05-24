@@ -12,11 +12,11 @@ data class UserGroup (
 
         @ManyToOne
         @JoinColumn(name = "group_id")
-        val groupId: Group,
+        val group: Group,
 
         @ManyToOne
         @JoinColumn(name = "user_id")
-        val userId: User,
+        val user: User,
 
         @Column(nullable = false)
         val joinedAt: LocalDateTime = LocalDateTime.now()

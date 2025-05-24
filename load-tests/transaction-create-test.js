@@ -10,7 +10,7 @@ export const options = {
     tags: { test_type: 'separate', action: 'create' }
 };
 
-const BASE_URL = 'http://localhost:8083/api/transactions/';
+const BASE_URL = 'http://localhost:30081/api/transactions/';
 const AUTH_TOKENS = __ENV.AUTH_TOKENS.split(',').filter(Boolean);
 
 export default function () {

@@ -18,6 +18,7 @@ data class RecurringPayment (
         val nextDueDate: LocalDateTime,
 
         @Column(nullable = false)
+        @Enumerated(EnumType.STRING)
         val recurrenceInterval: IntervalType?,
 
         @Column(nullable = false)

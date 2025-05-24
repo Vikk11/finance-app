@@ -28,6 +28,8 @@ data class PaymentRequest (
 
         val description: String?,
         val isRecurring: Boolean,
+
+        @Enumerated(EnumType.STRING)
         val status: RequestStatus,
 
         @Column(nullable = false)

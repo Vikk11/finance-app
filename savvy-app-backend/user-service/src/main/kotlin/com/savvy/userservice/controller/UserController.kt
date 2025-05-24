@@ -31,7 +31,7 @@ class UserController(private val userService: UserService) {
         val firebaseUid = authentication.principal as String
         val userId = userService.getUserIdByFirebaseUid(firebaseUid) ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
 
-        val user = userService.getUserById(userId) ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        val user = userService.getUserById(userId)
 
         return ResponseEntity.ok(user.currentBalance ?: BigDecimal.ZERO)
     }
@@ -69,7 +69,7 @@ class UserController(private val userService: UserService) {
             @PathVariable userId: Long,
             @RequestParam sum: BigDecimal
     ): ResponseEntity<Void> {
-        val user = userService.getUserById(userId) ?: return ResponseEntity.notFound().build()
+        val user = userService.getUserById(userId)
 
         if (user.currentBalance != sum) {
             userService.updateUserBalance(userId, sum)

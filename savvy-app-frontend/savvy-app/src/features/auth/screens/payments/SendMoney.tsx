@@ -31,7 +31,16 @@ const SendMoney: React.FC<AuthScreenProps<"SendMoney">> = ( { navigation } ) => 
 
             const token = await user.getIdToken();
             const data = await getUserContacts(token);
-            const contactUIDs: string[] = data.contacts.map((c:any) => c.firebaseUid);
+
+            if (!data || !Array.isArray(data.contacts)) {
+                console.warn("No contacts returned or invalid format.");
+                setContactsUIDs([]);
+                setContactUsers([]);
+                return;
+            }
+
+            const contactUIDs: string[] = data.contacts.map((c: any) => c.firebaseUid);
+
             setContactsUIDs(contactUIDs);
 
             const userDocs: UserDisplayInfo[] = [];

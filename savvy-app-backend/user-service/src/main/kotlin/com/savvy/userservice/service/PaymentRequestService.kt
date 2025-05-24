@@ -27,11 +27,11 @@ class PaymentRequestService(
         private val userService: UserService
 ) {
     @Transactional
-    fun createPaymentRequest(request: PaymentRequestRequest, firebaseUid: String): PaymentRequestResponse {
-        val requester = userRepository.findById(request.requesterId)
-                .orElseThrow { IllegalArgumentException("Requester not found") }
+    fun createPaymentRequest(request: PaymentRequestRequest, firebaseUid: String) {
+        val currentUserId = userService.getUserIdByFirebaseUid(firebaseUid)
+        val currentUser = userService.getUserById(currentUserId)
 
-        val payer = userRepository.findById(request.payerId)
+        val payer = userRepository.findById(userService.getUserIdByFirebaseUid(request.payerId))
                 .orElseThrow { IllegalArgumentException("Payer not found") }
 
         val group = request.groupId?.let {
@@ -39,7 +39,7 @@ class PaymentRequestService(
         }
 
         val paymentRequest = PaymentRequest(
-                requesterId = requester,
+                requesterId = currentUser,
                 groupId = group,
                 payerId = payer,
                 amount = request.amount,
@@ -50,25 +50,7 @@ class PaymentRequestService(
                 updatedAt = LocalDateTime.now(),
         )
 
-        val savedRequest = paymentRequestRepository.save(paymentRequest)
-
-        val currentUserId = userService.getUserIdByFirebaseUid(firebaseUid)
-        val currentUser = userService.getUserById(currentUserId)
-                ?: throw IllegalArgumentException("Current user not found")
-
-        return PaymentRequestResponse(
-                id = savedRequest.id,
-                requesterId = UserResponse.from(requester),
-                groupId = group?.let { GroupResponse.from(it) },
-                payerId = UserResponse.from(payer),
-                amount = savedRequest.amount,
-                description = savedRequest.description,
-                isRecurring = savedRequest.isRecurring,
-                status = savedRequest.status,
-                createdAt = savedRequest.createdAt,
-                updatedAt = savedRequest.updatedAt,
-                currentUser = UserResponse.from(currentUser)
-        )
+        paymentRequestRepository.save(paymentRequest)
     }
 
     @Transactional
@@ -112,7 +94,6 @@ class PaymentRequestService(
                 ?: throw IllegalArgumentException("User id not found")
 
         val user = userService.getUserById(userId)
-                ?: throw IllegalArgumentException("User not found")
 
         val requests = paymentRequestRepository.findAllByUserInvolved(userId)
 

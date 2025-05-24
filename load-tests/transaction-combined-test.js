@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-const BASE_URL = 'http://localhost:8083/api/transactions/';
+const BASE_URL = 'http://localhost:30081/api/transactions/';
 const AUTH_TOKENS = __ENV.AUTH_TOKENS.split(',').filter(Boolean);
 
 export const options = {
@@ -70,7 +70,7 @@ export function retrieveTransactions() {
         },
     };
 
-    const res = http.get(`${BASE_URL}list`, params);
+    const res = http.get(`${BASE_URL}recentTransactions`, params);
 
     check(res, {
         'retrieve: status 200': (r) => r.status === 200,

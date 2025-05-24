@@ -1,87 +1,163 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { View, Text, ScrollView, TouchableOpacity , StyleSheet} from "react-native";
 import DefaultIcon from "../../../../assets/icons/default-profile-icon.svg";
 import AddIcon from "../../../../assets/icons/circle-add-icon.svg";
 import CheckIcon from "../../../../assets/icons/check-circle-icon.svg";
 import GroupIcon from "../../../../assets/icons/group-circle-icon.svg";
+import {UserDisplayInfo} from "../../../utils/dataTypes";
+import {auth, db} from "../../../utils/firebaseConfig";
+import {getUserContacts} from "../api/userApi";
+import {collection, doc, getDoc, getDocs, limit, query, where} from "firebase/firestore";
 
-interface Item {
-    id: string;
-    name: string;
-    username?: string;
-    type: "user" | "group";
-    membersCount?: number; // for groups
-}
 
 interface Props {
     searchTerm: string;
+    onUserSelected: (userId: string) => void;
 }
 
-const sampleData: Item[] = [
-    { id: "1", name: "Jane Doe", username: "@jddoe", type: "user" },
-    { id: "2", name: "Emma Mouse", username: "@mmouse", type: "user" },
-    { id: "3", name: "House Group", membersCount: 5, type: "group" },
-];
+const UserOrGroupList: React.FC<Props> = ({ searchTerm, onUserSelected }) => {
+    const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+    const [contactsUIDs, setContactsUIDs] = useState<string[]>([]);
+    const [contactUsers, setContactUsers] = useState<UserDisplayInfo[]>([]);
+    const [searchResults, setSearchResults] = useState<UserDisplayInfo[]>([]);
+    const [loadingContacts, setLoadingContacts] = useState<boolean>(true);
 
-const UserOrGroupList: React.FC<Props> = ({ searchTerm }) => {
-    const [selectedIds, setSelectedIds] = useState<string[]>([]);
-    const [selectedType, setSelectedType] = useState<"user" | "group" | null>(null);
+    const fetchContacts = async () => {
+        try {
+            const user = auth.currentUser;
+            if (!user) {
+                console.error("No user found.");
+                return;
+            }
 
-    const handleSelect = (item: Item) => {
-        const isSelected = selectedIds.includes(item.id);
+            const token = await user.getIdToken();
+            const data = await getUserContacts(token);
 
-        if (!isSelected && selectedType && selectedType !== item.type) return;
+            if (!data || !Array.isArray(data.contacts)) {
+                console.warn("No contacts returned or invalid format.");
+                setContactsUIDs([]);
+                setContactUsers([]);
+                return;
+            }
 
-        if (isSelected) {
-            const newSelected = selectedIds.filter((id) => id !== item.id);
-            setSelectedIds(newSelected);
-            if (newSelected.length === 0) setSelectedType(null);
-        } else {
-            const newSelected = [...selectedIds, item.id];
-            setSelectedIds(newSelected);
-            setSelectedType(item.type);
+            const contactUIDs: string[] = data.contacts.map((c: any) => c.firebaseUid);
+
+            setContactsUIDs(contactUIDs);
+
+            const userDocs: UserDisplayInfo[] = [];
+            for (const uid of contactUIDs) {
+                const docRef = doc(db, "users", uid);
+                const snapshot = await getDoc(docRef);
+                if (snapshot.exists()) {
+                    const d = snapshot.data();
+                    userDocs.push({
+                        id: uid,
+                        name: d.name,
+                        username: d.username,
+                        isContact: true,
+                    });
+                }
+            }
+            setContactUsers(userDocs);
+        } catch (error) {
+            console.error("Failed to fetch contacts.", error);
+        } finally {
+            setLoadingContacts(false);
         }
     };
 
-    const filtered = sampleData.filter((item) =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    useEffect(() => {
+        fetchContacts();
+    }, []);
+
+    useEffect(() => {
+        handleSearchChange(searchTerm);
+    }, [searchTerm, contactsUIDs]);
+
+    const searchUsersInFirestore = async (term: string, contacts: string[]) => {
+        const usersRef = collection(db, "users");
+        const q = query(
+            usersRef,
+            where("username", ">=", term),
+            where("username", "<=", term + "\uf8ff"),
+            limit(10)
+        );
+
+        const snapshot = await getDocs(q);
+
+        return snapshot.docs.map((doc) => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                name: data.name,
+                username: data.username,
+                isContact: contacts.includes(doc.id),
+            };
+        });
+    };
+
+    const handleSearchChange = async (text: string) => {
+        if (text.length > 1) {
+            const results = await searchUsersInFirestore(text.toLowerCase(), contactsUIDs);
+            setSearchResults(results);
+        } else {
+            setSearchResults([]);
+        }
+    };
+
+    const renderUserItem = (user: UserDisplayInfo) => (
+        <TouchableOpacity
+            key={user.id}
+            onPress={() => {
+                const newSelected = selectedUserId === user.id ? null : user.id;
+                setSelectedUserId(newSelected);
+                if (newSelected) onUserSelected(newSelected);
+            }}
+            style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingVertical: 10,
+                borderBottomWidth: 1,
+                borderBottomColor: "#eee",
+            }}
+        >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <DefaultIcon width={40} height={40} />
+                <View style={{ marginLeft: 10 }}>
+                    <Text style={{ fontWeight: "600" }}>{user.name}</Text>
+                    <Text style={{ color: user.isContact ? "#666" : "orange" }}>
+                        {user.username} {user.isContact ? "" : "(not in contacts)"}
+                    </Text>
+                </View>
+            </View>
+            {selectedUserId === user.id ? (
+                <CheckIcon width={24} height={24} />
+            ) : (
+                <AddIcon width={24} height={24} />
+            )}
+        </TouchableOpacity>
     );
 
+    const showSearch = searchTerm.length > 1;
+    const usersToShow = showSearch ? searchResults : contactUsers;
+
     return (
-        <ScrollView style={{ maxHeight: 300, marginTop: 10 }}>
-            <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Friends</Text>
-                <View style={styles.line} />
-            </View>
-            {filtered
-                .filter((item) => item.type === "user")
-                .map((item) => (
-                    <TouchableOpacity key={item.id} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 8 }} onPress={() => handleSelect(item)}>
-                        <DefaultIcon width={30} height={30} />
-                        <View style={{ flex: 1, marginLeft: 10 }}>
-                            <Text>{item.name}</Text>
-                            <Text style={{ color: "gray" }}>{item.username}</Text>
-                        </View>
-                        {selectedIds.includes(item.id) ? <CheckIcon width={25} height={25} /> : <AddIcon width={25} height={25} />}
-                    </TouchableOpacity>
-                ))}
-            <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Friends</Text>
-                <View style={styles.line} />
-            </View>
-            {filtered
-                .filter((item) => item.type === "group")
-                .map((item) => (
-                    <TouchableOpacity key={item.id} style={{ flexDirection: "row", alignItems: "center", paddingVertical: 8 }} onPress={() => handleSelect(item)}>
-                        <GroupIcon width={30} height={30} />
-                        <View style={{ flex: 1, marginLeft: 10 }}>
-                            <Text>{item.name}</Text>
-                            <Text style={{ color: "gray" }}>{item.membersCount} members</Text>
-                        </View>
-                        {selectedIds.includes(item.id) ? <CheckIcon width={25} height={25} /> : <AddIcon width={25} height={25} />}
-                    </TouchableOpacity>
-                ))}
-        </ScrollView>
+        <View style={{ flex: 1 }}>
+            <ScrollView style={{ maxHeight: 250 }} showsVerticalScrollIndicator={false}>
+                {loadingContacts ? (
+                    <Text style={{ marginTop: 20 }}>Loading contacts...</Text>
+                ) : usersToShow.length === 0 ? (
+                    <Text style={{ marginTop: 20, textAlign: "center" }}>
+                        {showSearch
+                            ? "No users found matching your search."
+                            : "No contacts found. Use the search above to find users."}
+                    </Text>
+                ) : (
+                    usersToShow.map(renderUserItem)
+                )}
+            </ScrollView>
+        </View>
     );
 };
 
@@ -99,7 +175,7 @@ const styles = StyleSheet.create({
     line: {
         flex: 1,
         height: 1,
-        backgroundColor: "#ccc", // or any color you prefer
+        backgroundColor: "#ccc",
     },
 });
 

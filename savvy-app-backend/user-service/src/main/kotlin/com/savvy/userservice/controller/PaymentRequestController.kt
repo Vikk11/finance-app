@@ -12,14 +12,15 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/payment_requests")
 class PaymentRequestController (private val paymentRequestService: PaymentRequestService){
 
-    @PostMapping
-    fun create(@RequestBody request: PaymentRequestRequest): ResponseEntity<PaymentRequestResponse> {
+    @PostMapping("/createRequest")
+    fun create(@RequestBody request: PaymentRequestRequest): ResponseEntity<Void> {
         val authentication = SecurityContextHolder.getContext().authentication
         println("Security context authentication: $authentication")
 
         val firebaseUid = authentication.principal as String
+        paymentRequestService.createPaymentRequest(request, firebaseUid)
 
-        return ResponseEntity.ok(paymentRequestService.createPaymentRequest(request, firebaseUid))
+        return ResponseEntity.ok().build()
     }
 
     @PutMapping("/{id}/status")

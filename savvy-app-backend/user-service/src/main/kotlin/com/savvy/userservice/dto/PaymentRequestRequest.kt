@@ -6,9 +6,8 @@ import com.savvy.userservice.model.User
 import java.math.BigDecimal
 
 data class PaymentRequestRequest (
-        val requesterId: Long,
         val groupId: Long?,
-        val payerId: Long?,
+        val payerId: String,
         val amount: BigDecimal,
         val description: String?,
         val isRecurring: Boolean,

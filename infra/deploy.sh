@@ -23,7 +23,7 @@ for SERVICE in "${SERVICES[@]}"; do
   docker pull $IMAGE
   kind load docker-image $IMAGE
 
-  kubectl set image deployment/$SERVICE $SERVICE=$IMAGE --filename=$DEPLOYMENT_FILE
-
+  kubectl set image deployment/$SERVICE $SERVICE=$IMAGE
+  
   echo "$SERVICE updated successfully"
 done

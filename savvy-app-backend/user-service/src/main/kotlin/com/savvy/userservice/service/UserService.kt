@@ -50,13 +50,17 @@ class UserService(
         return userRepository.findByUserUid(userUid)?.id
     }
 
-    fun getUserById(userId: Long?): User? {
-        return userId?.let { userRepository.findById(it).orElse(null)}
+    fun getUserById(userId: Long?): User {
+        return userRepository.findById(userId)
+                .orElseThrow { IllegalArgumentException("User with ID $userId not found")}
     }
 
     fun sendMoneyToUser(senderId: String, receiverId: String, amount: BigDecimal) {
         val senderIdL = getUserIdByFirebaseUid(senderId)
         val receiverIdL = getUserIdByFirebaseUid(receiverId)
+
+        val sender = getUserById(senderIdL)
+        val receiver = getUserById(receiverIdL)
 
         val paymentEvent = PaymentEvent(
                 requesterId = senderIdL!!,
@@ -69,18 +73,18 @@ class UserService(
 
         paymentEventProducer.publishPayment(paymentEvent)
 
-        if(!userContactRepository.existsByUserIdAndContactId(senderIdL, receiverIdL)){
+        if(!userContactRepository.existsByUserAndContact(sender, receiver)){
             addUserToContacts(senderIdL, receiverIdL)
         }
 
-        if(!userContactRepository.existsByUserIdAndContactId(receiverIdL, senderIdL)){
+        if(!userContactRepository.existsByUserAndContact(receiver, sender)){
             addUserToContacts(receiverIdL, senderIdL)
         }
     }
 
-    fun addUserToContacts(userId: Long, contactId: Long) {
-        val user = userRepository.findById(userId)
-                .orElseThrow { IllegalArgumentException("User with ID $userId not found")}
+    fun addUserToContacts(userIdd: Long, contactId: Long) {
+        val user = userRepository.findById(userIdd)
+                .orElseThrow { IllegalArgumentException("User with ID $userIdd not found")}
 
         val contact = userRepository.findById(contactId)
                 .orElseThrow { IllegalArgumentException("User with ID $contactId not found")}
@@ -91,10 +95,11 @@ class UserService(
 
     fun getUserContacts(userUid: String): List<UserResponse>{
         val userId = getUserIdByFirebaseUid(userUid) ?: return emptyList()
+        val user = getUserById(userId)
 
-        return userContactRepository.findAllByUserId(userId)
+        return userContactRepository.findAllByUser(user)
                 .mapNotNull { it.contact.id }
-                .mapNotNull { contactId -> getUserById(contactId) }
+                .map { contactId -> getUserById(contactId) }
                 .map { user -> UserResponse.from(user) }
     }
 

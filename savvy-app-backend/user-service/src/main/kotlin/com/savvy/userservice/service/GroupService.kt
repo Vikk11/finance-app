@@ -42,8 +42,8 @@ class GroupService(
 
         val userGroups = members.map { member ->
             UserGroup(
-                    groupId = savedGroup,
-                    userId = member
+                    group = savedGroup,
+                    user = member
             )
         }
 
@@ -60,7 +60,7 @@ class GroupService(
         val user = userRepository.findById(userId)
                 .orElseThrow { IllegalArgumentException("User not found") }
 
-        val userGroup = userGroupRepository.findByGroupIdAndUserId(groupId, userId)
+        val userGroup = userGroupRepository.findByGroupAndUser(group, user)
                 ?: throw IllegalArgumentException("User is not a member of the group")
 
         userGroupRepository.delete(userGroup)
@@ -81,7 +81,7 @@ class GroupService(
             throw IllegalStateException("Group owner cannot leave the group. Consider deleting the group or transferring ownership.")
         }
 
-        val userGroup = userGroupRepository.findByGroupIdAndUserId(groupId, userId)
+        val userGroup = userGroupRepository.findByGroupAndUser(group, user)
                 ?: throw IllegalArgumentException("User is not a member of the group")
 
         userGroupRepository.delete(userGroup)
@@ -98,7 +98,7 @@ class GroupService(
         val userGroups = userGroupRepository.findAllByGroupId(groupId)
 
         return userGroups.map { userGroup ->
-            val user = userGroup.userId
+            val user = userGroup.user
             UserResponse(
                     id = user.id!!,
                     userUid = user.userUid

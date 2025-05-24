@@ -16,10 +16,10 @@ data class User(
         @Column(nullable = false)
         var currentBalance: BigDecimal,
 
-        @OneToMany(mappedBy = "userId", cascade = [CascadeType.ALL], orphanRemoval = true)
+        @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
         val contacts: MutableList<UserContact> = mutableListOf(),
 
-        @OneToMany(mappedBy = "userId", cascade = [CascadeType.ALL], orphanRemoval = true)
+        @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
         val groups: MutableList<UserGroup> = mutableListOf(),
 
         @OneToMany(mappedBy = "requesterId", cascade = [CascadeType.ALL], orphanRemoval = true)

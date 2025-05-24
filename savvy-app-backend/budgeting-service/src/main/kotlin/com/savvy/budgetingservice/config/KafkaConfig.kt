@@ -1,6 +1,6 @@
 package com.savvy.budgetingservice.config
 
-import com.savvy.budgetingservice.model.TransactionEvent
+import com.savvy.commonmodels.TransactionEvent
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.context.annotation.Bean
@@ -17,23 +17,23 @@ class KafkaConfig {
 
     @Bean
     fun consumerFactory(): ConsumerFactory<String, TransactionEvent> {
-        val configs = mapOf(
+        val configs = mutableMapOf<String, Any>(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "kafka.kafka.svc.cluster.local:9092",
                 ConsumerConfig.GROUP_ID_CONFIG to "budgeting-service-group",
-                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
-                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to JsonDeserializer::class.java
+                JsonDeserializer.TRUSTED_PACKAGES to "*"
         )
 
         val jsonDeserializer = JsonDeserializer(TransactionEvent::class.java)
-        jsonDeserializer.addTrustedPackages("*")
 
         return DefaultKafkaConsumerFactory(configs, StringDeserializer(), jsonDeserializer)
     }
 
     @Bean
-    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, TransactionEvent> {
+    fun kafkaListenerContainerFactory(
+            consumerFactory: ConsumerFactory<String, TransactionEvent   >
+    ): ConcurrentKafkaListenerContainerFactory<String, TransactionEvent> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, TransactionEvent>()
-        factory.consumerFactory = consumerFactory()
+        factory.consumerFactory = consumerFactory
         return factory
     }
 }

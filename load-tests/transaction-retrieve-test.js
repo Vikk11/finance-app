@@ -10,7 +10,7 @@ export const options = {
     tags: { test_type: 'separate', action: 'retrieve' }
 };
 
-const BASE_URL = 'http://localhost:8083/api/transactions/';
+const BASE_URL = 'http://localhost:30081/api/transactions/';
 const AUTH_TOKENS = __ENV.AUTH_TOKENS.split(',').filter(Boolean);
 
 export default function () {
@@ -23,7 +23,7 @@ export default function () {
         },
     };
 
-    const res = http.get(`${BASE_URL}list`, params);
+    const res = http.get(`${BASE_URL}recentTransactions`, params);
 
     check(res, {
         'is status 200': (r) => r.status === 200,
