@@ -5,17 +5,19 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import java.io.FileNotFoundException
+import java.io.FileInputStream
 
 @Configuration
 class FirebaseConfig {
     @Bean
     fun initializeFirebase(): FirebaseApp {
-        val resource = this::class.java.classLoader.getResourceAsStream("firebase/firebase-service-account.json")
-                ?: throw FileNotFoundException("Firebase service account JSON file not found!")
+        val firebasePath = System.getenv("FIREBASE_CREDENTIALS_PATH")
+                ?: throw IllegalStateException("Missing FIREBASE_CREDENTIALS_PATH env var")
+
+        val serviceAccount = FileInputStream(firebasePath)
 
         val options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(resource))
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                 .build()
 
         println("Firebase successfully initialized!")
