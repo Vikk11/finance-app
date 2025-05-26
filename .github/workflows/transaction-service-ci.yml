@@ -47,6 +47,7 @@ jobs:
       - name: Set lowercase image tag
         run: |
           OWNER_LC=$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')
+          echo "OWNER_LC=$OWNER_LC" >> $GITHUB_ENV
           echo "IMAGE_TAG=ghcr.io/${OWNER_LC}/${{ env.SERVICE_NAME }}:${GITHUB_SHA}" >> $GITHUB_ENV
 
       - name: Scan Docker image with Snyk CLI
@@ -61,3 +62,20 @@ jobs:
 
       - name: Push Docker image
         run: docker push $IMAGE_TAG
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Get AKS credentials
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ secrets.AKS_RESOURCE_GROUP }}
+          cluster-name: ${{ secrets.AKS_CLUSTER_NAME }}
+
+      - name: Set image in Deployment
+        run: |
+          kubectl set image deployment/${{ env.SERVICE_NAME }} \
+            ${{ env.SERVICE_NAME }}=$IMAGE_TAG \
+            --namespace=default
