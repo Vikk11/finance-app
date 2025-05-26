@@ -71,8 +71,8 @@ jobs:
       - name: Get AKS credentials
         uses: azure/aks-set-context@v3
         with:
-          resource-group: <RESOURCE_GROUP>
-          cluster-name: <CLUSTER_NAME>
+          resource-group: ${{ secrets.AKS_RESOURCE_GROUP }}
+          cluster-name: ${{ secrets.AKS_CLUSTER_NAME }}
 
       - name: Set image in Deployment
         run: |
