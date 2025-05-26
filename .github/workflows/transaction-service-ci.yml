@@ -63,8 +63,19 @@ jobs:
       - name: Push Docker image
         run: docker push $IMAGE_TAG
 
-      - name: Tag image as latest
-        run: docker tag $IMAGE_TAG ghcr.io/${OWNER_LC}/${{ env.SERVICE_NAME }}:latest
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
       
-      - name: Push latest tag
-        run: docker push ghcr.io/${OWNER_LC}/${{ env.SERVICE_NAME }}:latest
+      - name: Get AKS credentials
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ secrets.AKS_RESOURCE_GROUP }}
+          cluster-name: ${{ secrets.AKS_CLUSTER_NAME }}
+
+      - name: Set image in Deployment
+        run: |
+          kubectl set image deployment/${{ env.SERVICE_NAME }} \
+            ${{ env.SERVICE_NAME }}=$IMAGE_TAG \
+            --namespace=default
