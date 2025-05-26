@@ -61,3 +61,9 @@ jobs:
 
       - name: Push Docker image
         run: docker push $IMAGE_TAG
+
+      - name: Tag image as latest
+        run: docker tag $IMAGE_TAG ghcr.io/${OWNER_LC}/${{ env.SERVICE_NAME }}:latest
+      
+      - name: Push latest tag
+        run: docker push ghcr.io/${OWNER_LC}/${{ env.SERVICE_NAME }}:latest
