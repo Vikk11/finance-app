@@ -47,6 +47,7 @@ jobs:
       - name: Set lowercase image tag
         run: |
           OWNER_LC=$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')
+          echo "OWNER_LC=$OWNER_LC" >> $GITHUB_ENV
           echo "IMAGE_TAG=ghcr.io/${OWNER_LC}/${{ env.SERVICE_NAME }}:${GITHUB_SHA}" >> $GITHUB_ENV
 
       - name: Scan Docker image with Snyk CLI
