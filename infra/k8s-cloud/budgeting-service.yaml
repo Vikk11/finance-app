@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: budgeting-service
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: budgeting-service
+  template:
+    metadata:
+      labels:
+        app: budgeting-service
+    spec:
+      containers:
+        - name: budgeting-service
+          image: ghcr.io/vikk11/budgeting-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://ep-wispy-mode-a9l5a52m-pooler.gwc.azure.neon.tech/bugeting_service?sslmode=require
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: neon-db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: neon-db-secret
+                  key: password
+            - name: KAFKA_BROKER
+              value: kafka-0.kafka-headless.kafka.svc.cluster.local:9092
+            - name: FIREBASE_CREDENTIALS_PATH
+              value: "/secrets/firebase/firebase-service-account.json"
+          volumeMounts:
+            - name: firebase-secret-volume
+              mountPath: /secrets/firebase
+              readOnly: true
+      volumes:
+        - name: firebase-secret-volume
+          secret:
+            secretName: firebase-secret
+      imagePullSecrets:
+        - name: ghcr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: budgeting-service
+  namespace: default
+spec:
+  selector:
+    app: budgeting-service
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
+  type: ClusterIP

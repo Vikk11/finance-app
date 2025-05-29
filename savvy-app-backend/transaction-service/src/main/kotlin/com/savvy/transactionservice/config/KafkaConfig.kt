@@ -21,7 +21,7 @@ class KafkaConfig {
     @Bean
     fun producerFactory(): ProducerFactory<String, TransactionEvent> {
         val configs = mapOf(
-                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to "kafka.kafka.svc.cluster.local:9092",
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to "kafka-0.kafka-headless.kafka.svc.cluster.local:9092",
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java,
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to JsonSerializer::class.java
         )
@@ -36,7 +36,7 @@ class KafkaConfig {
     @Bean
     fun consumerFactory(): ConsumerFactory<String, PaymentEvent> {
         val configs = mutableMapOf<String, Any>(
-                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "kafka.kafka.svc.cluster.local:9092",
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "kafka-0.kafka-headless.kafka.svc.cluster.local:9092",
                 ConsumerConfig.GROUP_ID_CONFIG to "transaction-service-group",
                 JsonDeserializer.TRUSTED_PACKAGES to "*"
         )

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transaction-service
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transaction-service
+  template:
+    metadata:
+      labels:
+        app: transaction-service
+    spec:
+      containers:
+        - name: transaction-service
+          image: ghcr.io/vikk11/transaction-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://ep-wispy-mode-a9l5a52m-pooler.gwc.azure.neon.tech/transactions_service?sslmode=require
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: neon-db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: neon-db-secret
+                  key: password
+            - name: KAFKA_BROKER
+              value: kafka-0.kafka-headless.kafka.svc.cluster.local:9092
+            - name: FIREBASE_CREDENTIALS_PATH
+              value: "/secrets/firebase/firebase-service-account.json"
+          volumeMounts:
+            - name: firebase-secret-volume
+              mountPath: /secrets/firebase
+              readOnly: true
+      volumes:
+        - name: firebase-secret-volume
+          secret:
+            secretName: firebase-secret
+      imagePullSecrets:
+        - name: ghcr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transaction-service
+  namespace: default
+spec:
+  selector:
+    app: transaction-service
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+  type: ClusterIP

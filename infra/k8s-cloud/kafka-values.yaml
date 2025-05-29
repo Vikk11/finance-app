@@ -1,0 +1,34 @@
+controller:
+  replicaCount: 1
+
+kafka:
+  listeners: PLAINTEXT://:9092
+
+service:
+  type: ClusterIP
+
+persistence:
+  enabled: true
+  size: 8Gi
+  storageClass: default
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+zookeeper:
+  enabled: true
+  replicaCount: 1
+  persistence:
+    storageClass: default
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
