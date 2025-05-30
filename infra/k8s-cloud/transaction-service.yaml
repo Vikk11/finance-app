@@ -52,11 +52,15 @@ kind: Service
 metadata:
   name: transaction-service
   namespace: default
+  labels:
+    app: transaction-service
+    release: kube-prometheus-stack
 spec:
   selector:
     app: transaction-service
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 8081
       targetPort: 8081
   type: ClusterIP

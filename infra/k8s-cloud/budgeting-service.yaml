@@ -52,11 +52,15 @@ kind: Service
 metadata:
   name: budgeting-service
   namespace: default
+  labels:
+    app: budgeting-service
+    release: kube-prometheus-stack
 spec:
   selector:
     app: budgeting-service
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 8082
       targetPort: 8082
   type: ClusterIP

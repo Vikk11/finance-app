@@ -52,11 +52,15 @@ kind: Service
 metadata:
   name: user-service
   namespace: default
+  labels:
+    app: user-service
+    release: kube-prometheus-stack
 spec:
   selector:
     app: user-service
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 8080
       targetPort: 8080
   type: ClusterIP
