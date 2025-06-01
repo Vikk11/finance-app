@@ -1,5 +1,6 @@
 package com.savvy.userservice.service
 
+import com.google.firebase.cloud.FirestoreClient
 import com.savvy.commonmodels.PaymentEvent
 import com.savvy.userservice.dto.UserRequest
 import com.savvy.userservice.dto.UserResponse
@@ -11,6 +12,7 @@ import com.savvy.userservice.repository.UserRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.client.RestTemplate
 import java.lang.IllegalArgumentException
 import java.math.BigDecimal
 
@@ -80,6 +82,44 @@ class UserService(
         if(!userContactRepository.existsByUserAndContact(receiver, sender)){
             addUserToContacts(receiverIdL, senderIdL)
         }
+
+        val senderData = getUserDetailsFromFirestore(senderId)
+        val receiverData = getUserDetailsFromFirestore(receiverId)
+
+        sendEmailNotification(
+                to = senderData.email,
+                subject = "You sent money to ${receiverData.username}",
+                message = "You sent $amount to ${receiverData.username}"
+        )
+
+        sendEmailNotification(
+                to = receiverData.email,
+                subject = "You received money from ${senderData.username}",
+                message = "You received $amount from ${senderData.username}"
+        )
+    }
+
+    fun getUserDetailsFromFirestore(firebaseUid: String): UserInfo {
+        val doc = FirestoreClient.getFirestore()
+                .collection("users")
+                .document(firebaseUid)
+                .get().get()
+
+        return UserInfo(
+                email = doc.getString("email") ?: "unknown@example.com",
+                username = doc.getString("username") ?: "Unknown User"
+        )
+    }
+
+    fun sendEmailNotification(to: String, subject: String, message:String) {
+        val payload = mapOf(
+                "to" to to,
+                "subject" to subject,
+                "message" to message
+        )
+
+        val restTemplate = RestTemplate()
+        restTemplate.postForEntity("https://savvyemail-290909424865.europe-west1.run.app", payload, Void::class.java)
     }
 
     fun addUserToContacts(userIdd: Long, contactId: Long) {
@@ -111,3 +151,5 @@ class UserService(
         userRepository.save(user)
     }
 }
+
+data class UserInfo(val email: String, val username: String)
