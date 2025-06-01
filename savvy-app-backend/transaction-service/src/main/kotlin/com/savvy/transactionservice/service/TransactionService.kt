@@ -90,7 +90,7 @@ class TransactionService(
                 amount = event.amount,
                 categoryId = 13L,
                 relatedUserId = receiverId,
-                name = event.description ?: "Sent money to user $receiverId",
+                name = event.description ?: "Sent money",
                 date = LocalDateTime.now(),
                 createdAt = LocalDateTime.now(),
                 updatedAt = LocalDateTime.now()
@@ -113,7 +113,7 @@ class TransactionService(
                 amount = event.amount,
                 categoryId = 13L,
                 relatedUserId = senderId,
-                name = event.description ?: "Received money from user $senderId",
+                name = event.description ?: "Received money",
                 date = LocalDateTime.now(),
                 createdAt = LocalDateTime.now(),
                 updatedAt = LocalDateTime.now()
