@@ -88,14 +88,14 @@ class UserService(
 
         sendEmailNotification(
                 to = senderData.email,
-                subject = "You sent money to ${receiverData.username}",
-                message = "You sent $amount to ${receiverData.username}"
+                subject = "Sent money to ${receiverData.username}",
+                message = "You sent €$amount to ${receiverData.username}"
         )
 
         sendEmailNotification(
                 to = receiverData.email,
-                subject = "You received money from ${senderData.username}",
-                message = "You received $amount from ${senderData.username}"
+                subject = "Received money from ${senderData.username}",
+                message = "You received €$amount from ${senderData.username}"
         )
     }
 

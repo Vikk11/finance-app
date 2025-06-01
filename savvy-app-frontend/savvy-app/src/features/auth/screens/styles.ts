@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     },
     privacyContainer: {
         marginTop: 10,
-        marginBottom: 20,
+        marginBottom: 5,
         flexDirection: 'row',
         alignItems: 'center',
     },

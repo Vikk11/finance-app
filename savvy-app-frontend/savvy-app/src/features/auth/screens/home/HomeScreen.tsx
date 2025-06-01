@@ -91,7 +91,7 @@ const HomeScreen: React.FC = () => {
 
     const getTransactionIcon = (transaction: TransactionResponse) => {
         if (transaction.relatedUserId) {
-            return transaction.type === "INCOME" ? <ReceiveMoneyIcon /> : <SendMoneyIcon />;
+            return transaction.type === "INCOME" ? <ReceiveMoneyIcon width={35} height={35}/> : <SendMoneyIcon width={35} height={35}/>;
         }
 
         if(transaction.type === "INCOME"){
