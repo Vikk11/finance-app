@@ -80,7 +80,7 @@ class TransactionService(
         }
     }
 
-    fun handlePayment(event: PaymentEvent): Transaction{
+    fun handlePayment(event: PaymentEvent){
         val senderId = event.requesterId
         val receiverId = event.payerId ?: throw IllegalArgumentException("payerId cannot be null")
 
@@ -98,6 +98,15 @@ class TransactionService(
 
         transactionRepository.save(expenseTransaction)
 
+        val transactionEventSender = TransactionEvent(
+                userId = senderId,
+                type = TransactionType.EXPENSE.toString(),
+                amount = event.amount,
+                categoryId = 13L
+        )
+
+        transactionEventProducer.publishTransactionEvent(transactionEventSender)
+
         val incomeTransaction = Transaction(
                 userId = receiverId,
                 type = TransactionType.INCOME,
@@ -112,7 +121,14 @@ class TransactionService(
 
         transactionRepository.save(incomeTransaction)
 
-        return expenseTransaction
+        val transactionEventReceiver = TransactionEvent(
+                userId = receiverId,
+                type = TransactionType.INCOME.toString(),
+                amount = event.amount,
+                categoryId = 13L
+        )
+
+        transactionEventProducer.publishTransactionEvent(transactionEventReceiver)
     }
 
     fun getTransactionSum(){

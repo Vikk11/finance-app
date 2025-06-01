@@ -95,9 +95,9 @@ class UserService(
 
     fun getUserContacts(userUid: String): List<UserResponse>{
         val userId = getUserIdByFirebaseUid(userUid) ?: return emptyList()
-        val user = getUserById(userId)
+        val foundUser = getUserById(userId)
 
-        return userContactRepository.findAllByUser(user)
+        return userContactRepository.findAllByUser(foundUser)
                 .mapNotNull { it.contact.id }
                 .map { contactId -> getUserById(contactId) }
                 .map { user -> UserResponse.from(user) }
