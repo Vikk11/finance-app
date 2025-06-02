@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     },
 
     checkedCheckbox: {
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#1565c0',
     },
 
     checkboxLabel: {
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
 
     privacyLink: {
         textDecorationLine: 'underline',
-        color: '#007bff',
+        color: '#1565c0',
     },
 
     modalOverlay: {
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
 
     modalButton: {
         padding: 10,
-        backgroundColor: '#007bff',
+        backgroundColor: '#1565c0',
         borderRadius: 5,
     },
 

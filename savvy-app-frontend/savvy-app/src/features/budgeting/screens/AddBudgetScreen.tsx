@@ -91,9 +91,9 @@ const AddBudgetScreen: React.FC<BudgetingScreenProps<"AddBudget">> = ( { navigat
                         selectedValue={period}
                         onValueChange={(itemValue) => setPeriod(itemValue)}
                     >
-                        <Picker.Item label="Weekly" value={null}/>
-                        <Picker.Item label="Monthly" value={null}/>
-                        <Picker.Item label="Yearly" value={null}/>
+                        <Picker.Item label="Weekly" value={"weekly"}/>
+                        <Picker.Item label="Monthly" value={"monthly"}/>
+                        <Picker.Item label="Yearly" value={"yearly"}/>
                     </Picker>
                 </View>
             </View>

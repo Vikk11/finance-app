@@ -5,7 +5,7 @@ import UtilitiesIcon from "../../../../assets/transaction-icons/utilities-catego
 import TransportationIcon from "../../../../assets/transaction-icons/transportation-category.svg"
 import HealthIcon from "../../../../assets/transaction-icons/health_category.svg"
 import Entertainment from "../../../../assets/transaction-icons/entertainment-category.svg"
-import ShoppingIcon from "../../../../assets/transaction-icons/transportation-category.svg"
+import ShoppingIcon from "../../../../assets/transaction-icons/shopping-category.svg"
 import EducationIcon from "../../../../assets/transaction-icons/education-category.svg"
 import TravelIcon from "../../../../assets/transaction-icons/travel-category.svg"
 import CharityIcon from "../../../../assets/transaction-icons/charity-category.svg"
