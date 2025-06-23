@@ -29,7 +29,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.2.1")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.hibernate.orm:hibernate-core:6.2.3.Final")
+    implementation("org.hibernate.orm:hibernate-core:7.0.3.Final")
     implementation("org.postgresql:postgresql:42.6.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.kafka:spring-kafka")
