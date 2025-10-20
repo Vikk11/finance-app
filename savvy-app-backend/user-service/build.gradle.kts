@@ -4,7 +4,7 @@ plugins {
     id("org.springframework.boot") version "3.4.3"
     id("io.spring.dependency-management") version "1.1.7"
     kotlin("plugin.jpa") version "1.9.25"
-    id("org.sonarqube") version "4.4.1.3373"
+    id("org.sonarqube") version "7.0.0.6105"
 }
 
 group = "com.savvy"
