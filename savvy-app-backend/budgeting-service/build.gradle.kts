@@ -27,7 +27,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.2.1")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.hibernate.orm:hibernate-core:6.2.3.Final")
     implementation("org.postgresql:postgresql:42.6.0")
