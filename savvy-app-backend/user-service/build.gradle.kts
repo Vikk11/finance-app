@@ -30,7 +30,7 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.springframework.retry:spring-retry")
     implementation("org.springframework.boot:spring-boot-starter-aop")
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.2.1")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.hibernate.orm:hibernate-core:6.2.3.Final")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
